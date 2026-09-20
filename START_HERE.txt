@@ -1,0 +1,194 @@
+================================================================================
+                    🎉 BIENVENIDO A KERNEL CHECKLIST v2.0
+================================================================================
+
+✅ LOS ARCHIVOS ESTÁN EN:
+   C:\Users\kerne\OneDrive\KESAS 2026\JC GC\CLAUDE\kernel-checklist
+
+================================================================================
+🚀 PASO 1: ABRE LA APLICACION
+================================================================================
+
+Haz DOBLE CLIC en:
+   📄 index.html
+
+Se abrirá en tu navegador automáticamente.
+
+================================================================================
+🔑 PASO 2: INICIA SESION
+================================================================================
+
+ADMIN:
+   Usuario: 123456
+   Contraseña: 1234
+
+CONDUCTORES:
+   Usuario: 111111 | Contraseña: 1111 | Jorge Alberto Prieto
+   Usuario: 222222 | Contraseña: 2222 | Castor Paul Gonzalez
+   Usuario: 333333 | Contraseña: 3333 | Julio Cesar Gomez
+   Usuario: 444444 | Contraseña: 4444 | Juan Carlos Polo
+
+================================================================================
+✨ PASO 3: COMIENZA A USAR
+================================================================================
+
+PARA CONDUCTORES:
+  1. Inicia sesión
+  2. Verás mensaje inspirador → presiona "Entendido"
+  3. Completa el checklist
+  4. Toma fotos si hay problemas
+  5. Guarda el registro
+
+PARA ADMINISTRADOR:
+  1. Inicia sesión con 123456
+  2. Vas al panel "⚙️ Administrador"
+  3. Puedes gestionar usuarios
+  4. Ver estadísticas
+  5. Exportar datos
+
+================================================================================
+⚠️ IMPORTANTE
+================================================================================
+
+CAMBIAR CONTRASEÑA DEL ADMIN:
+  ✅ Usuario 123456 solo es temporal
+  ✅ Cambiar inmediatamente después de primera prueba
+  ✅ Usar contraseña segura (8+ caracteres)
+
+CREAR USUARIOS REALES:
+  ✅ Panel Admin → Gestión de Usuarios
+  ✅ Agregar usuario para cada conductor
+  ✅ Asignar contraseñas individuales
+  ✅ Establecer rol (Usuario o Admin)
+
+HACER RESPALDO:
+  ✅ Panel Admin → Descargar Todos los Datos
+  ✅ Guardar JSON en lugar seguro
+  ✅ Hacer respaldo regularmente
+
+================================================================================
+📱 VEHICULOS Y CONDUCTORES
+================================================================================
+
+PLACAS:
+  🚗 LPN205
+  🚗 KST307
+  🚗 NYU846
+  🚗 JOL153
+
+CONDUCTORES:
+  👤 Jorge Alberto Prieto (111111)
+  👤 Castor Paul Gonzalez (222222)
+  👤 Julio Cesar Gomez (333333)
+  👤 Juan Carlos Polo (444444)
+
+================================================================================
+🎯 PROXIMOS PASOS
+================================================================================
+
+HOY:
+  [ ] Abre index.html
+  [ ] Prueba con usuario 123456
+  [ ] Crea usuario de prueba
+
+MAÑANA:
+  [ ] Cambiar contraseña de admin
+  [ ] Crear usuarios para cada conductor
+  [ ] Hacer respaldo de datos
+
+ESTA SEMANA:
+  [ ] Todos prueben la app
+  [ ] Capturen fotos
+  [ ] Revisen historial
+  [ ] Exportar reportes
+
+================================================================================
+💬 MENSAJE PARA CONDUCTORES
+================================================================================
+
+Cada vez que un conductor inicia sesión, verá este mensaje:
+
+"Cada kilómetro de esta hora y media de ruta es el puente hacia tus metas,
+pero tu seguridad es la meta principal. Conduce con atención y serenidad;
+tu vida es el activo más valioso de nuestra empresa y tu hogar."
+
+📍 Kernel Energy - Tu seguridad, Nuestra Prioridad
+
+================================================================================
+📖 DOCUMENTOS
+================================================================================
+
+LEER EN ESTE ORDEN:
+
+1. START_HERE.txt (Este archivo) - 5 min
+2. README.md - 5 min
+3. SECURITY.md - 20 min (importante)
+4. MANUAL.md - 15 min
+
+================================================================================
+✅ CHECKLIST
+================================================================================
+
+  [ ] Abrí index.html
+  [ ] Inicié sesión como admin (123456)
+  [ ] Vi el panel de control
+  [ ] Probé login con conductor
+  [ ] Vi el mensaje inspirador
+  [ ] Completé un checklist de prueba
+  [ ] Tomé una foto de prueba
+  [ ] Vi el historial
+  [ ] Exporté un reporte
+  [ ] Leí documentación de seguridad
+
+================================================================================
+🆘 PROBLEMAS
+================================================================================
+
+P: "No se abre la app"
+R: Haz doble clic directamente en index.html
+
+P: "Olvido contraseña de admin"
+R: Contraseña es 1234. Pero CAMBIAR inmediatamente.
+
+P: "No puedo tomar fotos"
+R: Permite acceso a cámara en Chrome → Configuración → Privacidad
+
+P: "Se perdieron datos"
+R: Hacer respaldo regularmente. Sin respaldo no se recuperan.
+
+Ver SECURITY.md para más problemas.
+
+================================================================================
+📞 NECESITAS AYUDA
+================================================================================
+
+1. Lee README.md (descripción general)
+2. Lee SECURITY.md (seguridad y troubleshooting)
+3. Lee MANUAL.md (guía completa)
+4. Contacta administrador si persiste el problema
+
+================================================================================
+🎉 ¡LISTO!
+================================================================================
+
+Tienes una aplicación web profesional y segura para:
+  ✅ Gestionar checklists de vehículos
+  ✅ Capturar fotos de daños
+  ✅ Gestionar usuarios
+  ✅ Ver estadísticas
+  ✅ Exportar reportes
+
+TODO sin internet, SEGURO y PRIVADO.
+
+COMIENZA AHORA:
+  1. Haz doble clic en index.html
+  2. Login con usuario 123456
+  3. ¡Explora la aplicación!
+
+================================================================================
+
+                    ¡Tu seguridad es nuestra prioridad! 🛡️
+
+                          Kernel Energy - 2024
+
+================================================================================

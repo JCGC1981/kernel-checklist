@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Diario de Vehículos - Kernel Energy (Seguro)</title>
+    <meta name="theme-color" content="#667eea">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px 30px;
+            display: none;
+        }
+
+        .login-container.show {
+            display: block;
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .login-container p {
+            text-align: center;
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 13px;
+        }
+
+        .login-form-group {
+            margin-bottom: 20px;
+        }
+
+        .login-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .login-form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .login-form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 13px;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        .login-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: none;
+        }
+
+        .app-container.show {
+            display: block;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 12px;
+        }
+
+        .user-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .user-badge.admin {
+            background: #ff6b6b;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            background: #eee;
+        }
+
+        .tab-btn.admin-only {
+            color: #ff6b6b;
+        }
+
+        .tab-btn.admin-only.active {
+            border-bottom-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .tab-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="email"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin-right: 10px;
+            accent-color: #667eea;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 25px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .camera-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            border: 2px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .camera-preview {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .camera-preview.show {
+            display: block;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .photo-item .delete-photo {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .photo-item:hover .delete-photo {
+            opacity: 1;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ee5a52;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            min-width: auto;
+            flex: 0;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .warning-message.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .record-item {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .record-vehicle {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .record-date {
+            color: #999;
+            font-size: 13px;
+        }
+
+        .record-details {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .record-photos {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .record-photos h4 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .record-photos img {
+            max-width: 200px;
+            height: auto;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .admin-section {
+            background: #fff3cd;
+            border-left: 4px solid #ff6b6b;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .admin-section h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .read-only-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .welcome-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-modal.show {
+            display: flex;
+        }
+
+        .welcome-content {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.5s ease;
+        }
+
+        .welcome-content h2 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #333;
+            font-weight: 500;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .welcome-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-subtext {
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .welcome-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 25px;
+        }
+
+        .welcome-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-info {
+                text-align: center;
+                margin-top: 15px;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                flex: 1 1 50%;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .photo-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Panel de Login -->
+    <div class="login-container show" id="loginContainer">
+        <h1>🔐 Checklist de Vehículos</h1>
+        <p>Kernel Energy - Acceso Seguro</p>
+
+        <div class="login-info">
+            <strong>Credenciales de Demo:</strong><br>
+            Usuario: 123456<br>
+            Contraseña: 1234
+        </div>
+
+        <div class="login-error" id="loginError"></div>
+
+        <form id="loginForm">
+            <div class="login-form-group">
+                <label>Usuario (Cédula/ID)</label>
+                <input type="text" id="loginUser" placeholder="Ingresa tu cédula o ID" required>
+            </div>
+
+            <div class="login-form-group">
+                <label>Contraseña</label>
+                <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" required>
+            </div>
+
+            <button type="submit" class="login-btn">Ingresar</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">
+            <p>🛡️ Esta aplicación es segura y privada</p>
+            <p>Los datos nunca se envían a internet</p>
+        </div>
+    </div>
+
+    <!-- Aplicación Principal -->
+    <div class="app-container" id="appContainer">
+        <header>
+            <div>
+                <h1>🚗 Checklist Diario</h1>
+                <p style="font-size: 13px; opacity: 0.9;">Kernel Energy</p>
+            </div>
+            <div class="user-info">
+                <div class="user-badge" id="userRoleBadge">Usuario</div>
+                <div style="margin-bottom: 10px;">
+                    <span id="currentUser">Usuario</span><br>
+                    <span id="sessionTime" style="font-size: 11px;"></span>
+                </div>
+                <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('new')">Nuevo Checklist</button>
+            <button class="tab-btn" onclick="switchTab('history')">Historial</button>
+            <button class="tab-btn admin-only" id="adminTabBtn" onclick="switchTab('admin')">⚙️ Administrador</button>
+        </div>
+
+        <div class="content">
+            <!-- Nueva Inspección -->
+            <div id="new" class="tab-content active">
+                <div class="success-message" id="successMessage">
+                    ✓ Checklist guardado correctamente
+                </div>
+
+                <div class="warning-message" id="warningMessage"></div>
+
+                <form id="checklistForm">
+                    <!-- Información del Vehículo -->
+                    <div class="section-title">📋 Información del Vehículo</div>
+
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Placa del Vehículo</label>
+                        <select id="placa" required>
+                            <option value="">-- Selecciona una placa --</option>
+                            <option value="LPN205">LPN205</option>
+                            <option value="KST307">KST307</option>
+                            <option value="NYU846">NYU846</option>
+                            <option value="JOL153">JOL153</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Conductor</label>
+                        <select id="conductor" required>
+                            <option value="">-- Selecciona un conductor --</option>
+                            <option value="Jorge Alberto Prieto">Jorge Alberto Prieto</option>
+                            <option value="Castor Paul Gonzalez">Castor Paul Gonzalez</option>
+                            <option value="Julio Cesar Gomez">Julio Cesar Gomez</option>
+                            <option value="Juan Carlos Polo">Juan Carlos Polo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kilómetros Iniciales</label>
+                        <input type="number" id="kmInicial" placeholder="Ej: 45000">
+                    </div>
+
+                    <!-- SOAT -->
+                    <div class="section-title">🛡️ Seguro SOAT</div>
+
+                    <div class="form-group">
+                        <label>Estado del SOAT</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" name="soat" value="vigente" id="soatVigente">
+                                <label for="soatVigente">Vigente</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="soat" value="proxVencer" id="soatProxVencer">
+                                <label for="soatProxVencer">Próximo a Vencer</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="soat" value="vencido" id="soatVencido">
+                                <label for="soatVencido">Vencido</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de Vencimiento SOAT</label>
+                        <input type="date" id="fechaVencSoat">
+                    </div>
+
+                    <!-- Revisión del Vehículo -->
+                    <div class="section-title">🔧 Revisión del Vehículo</div>
+
+                    <div class="form-group">
+                        <label>Condiciones Generales</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="motor" name="condicion">
+                                <label for="motor">Motor</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="frenos" name="condicion">
+                                <label for="frenos">Frenos</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="llantas" name="condicion">
+                                <label for="llantas">Llantas</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="luces" name="condicion">
+                                <label for="luces">Luces</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="limpiaparabrisas" name="condicion">
+                                <label for="limpiaparabrisas">Limpiaparabrisas</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="espejos" name="condicion">
+                                <label for="espejos">Espejos</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="direccion" name="condicion">
+                                <label for="direccion">Dirección</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="suspension" name="condicion">
+                                <label for="suspension">Suspensión</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="aire" name="condicion">
+                                <label for="aire">Aire Acondicionado</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="cristales" name="condicion">
+                                <label for="cristales">Cristales</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Herramientas de Seguridad -->
+                    <div class="section-title">🧰 Herramientas y Equipos de Seguridad</div>
+
+                    <div class="form-group">
+                        <label>Equipos Disponibles</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="botiquín" name="herramientas">
+                                <label for="botiquín">Botiquín de Primeros Auxilios</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="triangulos" name="herramientas">
+                                <label for="triangulos">Triángulos de Seguridad</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="chalecos" name="herramientas">
+                                <label for="chalecos">Chalecos Reflectivos</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="linterna" name="herramientas">
+                                <label for="linterna">Linterna/Luz de Emergencia</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="herramientaBasica" name="herramientas">
+                                <label for="herramientaBasica">Herramientas Básicas</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="extintor" name="herramientas">
+                                <label for="extintor">Extintor</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="repuesto" name="herramientas">
+                                <label for="repuesto">Llanta de Repuesto</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="gata" name="herramientas">
+                                <label for="gata">Gata</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estado General del Vehículo -->
+                    <div class="section-title">📊 Estado General del Vehículo</div>
+
+                    <div class="form-group">
+                        <label>Calificación General</label>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" name="calificacion" value="excelente" id="excelente">
+                                <label for="excelente">✅ Excelente</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="calificacion" value="bueno" id="bueno">
+                                <label for="bueno">👍 Bueno</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="calificacion" value="regular" id="regular">
+                                <label for="regular">⚠️ Regular</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="calificacion" value="malo" id="malo">
+                                <label for="malo">❌ Malo</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Problemas Detectados o Observaciones</label>
+                        <textarea id="observaciones" placeholder="Describe cualquier problema, daño o situación que requiera atención..."></textarea>
+                    </div>
+
+                    <!-- Captura de Fotos -->
+                    <div class="section-title">📸 Fotos de Evidencia (Opcional)</div>
+
+                    <div class="camera-section">
+                        <p style="margin-bottom: 15px; color: #555;">
+                            📷 Toma fotos de cualquier daño o anomalía detectada para documentar mejor el estado del vehículo.
+                        </p>
+
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                            <button type="button" class="btn-primary btn-small" onclick="openCamera()">
+                                📷 Abrir Cámara
+                            </button>
+                            <button type="button" class="btn-secondary btn-small" onclick="uploadPhoto()">
+                                📁 Subir Foto
+                            </button>
+                            <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                        </div>
+
+                        <video id="cameraPreview" class="camera-preview" style="max-width: 100%; border-radius: 5px;"></video>
+
+                        <div style="display: none;" id="cameraControls">
+                            <button type="button" class="btn-primary btn-small" onclick="capturePhoto()">✓ Capturar</button>
+                            <button type="button" class="btn-secondary btn-small" onclick="closeCamera()">✕ Cancelar</button>
+                        </div>
+
+                        <div class="photo-gallery" id="photoGallery"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary">💾 Guardar Checklist</button>
+                        <button type="reset" class="btn-secondary">🔄 Limpiar Formulario</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Historial -->
+            <div id="history" class="tab-content">
+                <h2 style="margin-bottom: 20px;">Historial de Checklists</h2>
+                <div class="read-only-message" id="readOnlyMsg" style="display: none;">
+                    🔒 Modo solo lectura: Solo administradores pueden eliminar registros
+                </div>
+                <div id="historyList"></div>
+            </div>
+
+            <!-- Panel de Administrador -->
+            <div id="admin" class="tab-content">
+                <div class="admin-section">
+                    <h3>🛡️ Panel de Control Administrativo</h3>
+                    <p style="margin-bottom: 15px; color: #555;">
+                        Aquí puedes gestionar la aplicación, modificar accesos y generar reportes.
+                    </p>
+
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="exportAllData()">📥 Descargar Todos los Datos (JSON)</button>
+                        <button class="btn-primary" onclick="exportCSV()">📊 Descargar Reporte (CSV)</button>
+                        <button class="btn-danger" onclick="clearAllDataAdmin()">🗑️ Eliminar Todo</button>
+                    </div>
+                </div>
+
+                <div class="section-title">📋 Gestión de Usuarios</div>
+
+                <div class="form-group">
+                    <label>Agregar Nuevo Usuario</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px;">
+                        <input type="text" id="newUserID" placeholder="Cédula/ID">
+                        <input type="password" id="newUserPass" placeholder="Contraseña">
+                        <select id="newUserRole">
+                            <option value="usuario">Usuario Normal</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                        <button type="button" class="btn-primary btn-small" onclick="addNewUser()">Agregar</button>
+                    </div>
+                </div>
+
+                <div class="section-title">👥 Usuarios Existentes</div>
+
+                <div id="usersList"></div>
+
+                <div class="section-title">📊 Estadísticas</div>
+
+                <div id="statsSection"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver foto -->
+    <div class="modal" id="photoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePhotoModal()">×</button>
+            <img id="modalPhoto" style="max-width: 100%; width: 100%;">
+        </div>
+    </div>
+
+    <!-- Modal de Bienvenida para Conductores -->
+    <div class="welcome-modal" id="welcomeModal">
+        <div class="welcome-content">
+            <div class="welcome-icon">🚗</div>
+            <h2>¡Bienvenido a tu Jornada!</h2>
+
+            <div class="welcome-message">
+                "Cada kilómetro de esta hora y media de ruta es el puente hacia tus metas, pero tu seguridad es la meta principal. Conduce con atención y serenidad; tu vida es el activo más valioso de nuestra empresa y tu hogar."
+            </div>
+
+            <div class="welcome-subtext">
+                <p>📍 Kernel Energy - Tu seguridad, Nuestra Prioridad</p>
+                <p style="margin-top: 10px; font-size: 13px;">Completa tu checklist diario y conduce con confianza</p>
+            </div>
+
+            <button class="welcome-btn" onclick="closeWelcomeModal()">
+                ✓ Entendido - Comenzar Checklist
+            </button>
+        </div>
+    </div>
+
+    <!-- Input oculto para archivo -->
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+    <script>
+        let currentUser = null;
+        let currentRole = null;
+        let sessionStartTime = null;
+        let currentPhotos = [];
+
+        window.addEventListener('load', () => {
+            initApp();
+        });
+
+        function initApp() {
+            document.getElementById('fecha').valueAsDate = new Date();
+            setupEventListeners();
+            checkLoginStatus();
+            updateSessionTime();
+            setInterval(updateSessionTime, 1000);
+        }
+
+        function setupEventListeners() {
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('checklistForm').addEventListener('submit', handleSaveChecklist);
+            document.getElementById('photoUpload').addEventListener('change', handlePhotoUpload);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPassword').value.trim();
+
+            const loginError = document.getElementById('loginError');
+            loginError.classList.remove('show');
+
+            if (!user || !pass) {
+                showLoginError('Por favor completa todos los campos');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            if (!users[user]) {
+                showLoginError('Usuario no encontrado');
+                return;
+            }
+
+            if (users[user].password !== pass) {
+                showLoginError('Contraseña incorrecta');
+                return;
+            }
+
+            currentUser = user;
+            currentRole = users[user].role;
+            sessionStartTime = new Date();
+
+            localStorage.setItem('currentSession', JSON.stringify({
+                user: currentUser,
+                role: currentRole,
+                startTime: sessionStartTime
+            }));
+
+            showApp();
+        }
+
+        function showLoginError(msg) {
+            const error = document.getElementById('loginError');
+            error.textContent = msg;
+            error.classList.add('show');
+        }
+
+        function checkLoginStatus() {
+            const session = JSON.parse(localStorage.getItem('currentSession') || 'null');
+
+            if (session && session.user) {
+                currentUser = session.user;
+                currentRole = session.role;
+                sessionStartTime = new Date(session.startTime);
+                showApp();
+            } else {
+                initializeUsers();
+            }
+        }
+
+        function initializeUsers() {
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            if (Object.keys(users).length === 0) {
+                users = {
+                    '123456': { password: '1234', role: 'admin', name: 'Administrador' },
+                    '111111': { password: '1111', role: 'usuario', name: 'Jorge Alberto Prieto' },
+                    '222222': { password: '2222', role: 'usuario', name: 'Castor Paul Gonzalez' },
+                    '333333': { password: '3333', role: 'usuario', name: 'Julio Cesar Gomez' },
+                    '444444': { password: '4444', role: 'usuario', name: 'Juan Carlos Polo' }
+                };
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+        }
+
+        function showApp() {
+            document.getElementById('loginContainer').classList.remove('show');
+            document.getElementById('appContainer').classList.add('show');
+
+            document.getElementById('currentUser').textContent = currentUser;
+
+            const badgeEl = document.getElementById('userRoleBadge');
+            if (currentRole === 'admin') {
+                badgeEl.textContent = '🔐 ADMINISTRADOR';
+                badgeEl.classList.add('admin');
+                document.getElementById('adminTabBtn').style.display = 'block';
+                document.getElementById('readOnlyMsg').style.display = 'none';
+            } else {
+                badgeEl.textContent = '👤 Usuario';
+                document.getElementById('adminTabBtn').style.display = 'none';
+                document.getElementById('readOnlyMsg').style.display = 'block';
+
+                showWelcomeModal();
+            }
+        }
+
+        function showWelcomeModal() {
+            document.getElementById('welcomeModal').classList.add('show');
+        }
+
+        function closeWelcomeModal() {
+            document.getElementById('welcomeModal').classList.remove('show');
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                localStorage.removeItem('currentSession');
+                currentUser = null;
+                currentRole = null;
+                currentPhotos = [];
+
+                document.getElementById('appContainer').classList.remove('show');
+                document.getElementById('loginContainer').classList.add('show');
+                document.getElementById('loginForm').reset();
+                document.getElementById('loginError').classList.remove('show');
+            }
+        }
+
+        function updateSessionTime() {
+            if (sessionStartTime) {
+                const elapsed = new Date() - sessionStartTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                document.getElementById('sessionTime').textContent =
+                    `Sesión: ${minutes}m ${seconds}s`;
+            }
+        }
+
+        let cameraStream = null;
+
+        async function openCamera() {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'environment' }
+                });
+
+                const video = document.getElementById('cameraPreview');
+                video.srcObject = cameraStream;
+                video.classList.add('show');
+                document.getElementById('cameraControls').style.display = 'flex';
+            } catch (err) {
+                alert('No se pudo acceder a la cámara. Por favor, verifica los permisos.');
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraPreview');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const photoData = canvas.toDataURL('image/jpeg', 0.7);
+
+            currentPhotos.push({
+                data: photoData,
+                timestamp: new Date().toLocaleString('es-CO')
+            });
+
+            updatePhotoGallery();
+            closeCamera();
+        }
+
+        function closeCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+
+            document.getElementById('cameraPreview').classList.remove('show');
+            document.getElementById('cameraControls').style.display = 'none';
+        }
+
+        function uploadPhoto() {
+            document.getElementById('photoUpload').click();
+        }
+
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                currentPhotos.push({
+                    data: event.target.result,
+                    timestamp: new Date().toLocaleString('es-CO')
+                });
+                updatePhotoGallery();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updatePhotoGallery() {
+            const gallery = document.getElementById('photoGallery');
+
+            if (currentPhotos.length === 0) {
+                gallery.innerHTML = '';
+                return;
+            }
+
+            gallery.innerHTML = currentPhotos.map((photo, idx) => `
+                <div class="photo-item">
+                    <img src="${photo.data}" onclick="viewPhoto(${idx})" alt="Foto ${idx + 1}">
+                    <button class="delete-photo" onclick="deletePhoto(${idx})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function deletePhoto(idx) {
+            currentPhotos.splice(idx, 1);
+            updatePhotoGallery();
+        }
+
+        function viewPhoto(idx) {
+            const modal = document.getElementById('photoModal');
+            document.getElementById('modalPhoto').src = currentPhotos[idx].data;
+            modal.classList.add('show');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.remove('show');
+        }
+
+        function handleSaveChecklist(e) {
+            e.preventDefault();
+
+            const checklist = {
+                id: Date.now(),
+                fecha: document.getElementById('fecha').value,
+                placa: document.getElementById('placa').value,
+                conductor: document.getElementById('conductor').value,
+                kmInicial: document.getElementById('kmInicial').value,
+                soat: document.querySelector('input[name="soat"]:checked')?.value,
+                fechaVencSoat: document.getElementById('fechaVencSoat').value,
+                condiciones: Array.from(document.querySelectorAll('input[name="condicion"]:checked')).map(el => el.id),
+                herramientas: Array.from(document.querySelectorAll('input[name="herramientas"]:checked')).map(el => el.id),
+                calificacion: document.querySelector('input[name="calificacion"]:checked')?.value,
+                observaciones: document.getElementById('observaciones').value,
+                fotos: currentPhotos,
+                usuario: currentUser,
+                timestamp: new Date().toLocaleString('es-CO')
+            };
+
+            let registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
+            registros.push(checklist);
+            localStorage.setItem('checklistRegistros', JSON.stringify(registros));
+
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('show');
+            setTimeout(() => successMsg.classList.remove('show'), 3000);
+
+            this.reset();
+            document.getElementById('fecha').valueAsDate = new Date();
+            currentPhotos = [];
+            updatePhotoGallery();
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'history') {
+                loadHistory();
+            } else if (tabName === 'admin') {
+                if (currentRole !== 'admin') {
+                    alert('Acceso denegado: Solo administradores');
+                    switchTab('new');
+                    return;
+                }
+                loadAdminPanel();
+            }
+        }
+
+        function loadHistory() {
+            const registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
+            const historyList = document.getElementById('historyList');
+
+            if (registros.length === 0) {
+                historyList.innerHTML = '<div class="empty-state">📭 No hay registros guardados aún</div>';
+                return;
+            }
+
+            historyList.innerHTML = registros.reverse().map(reg => `
+                <div class="record-item">
+                    <div class="record-header">
+                        <div>
+                            <div class="record-vehicle">🚗 ${reg.placa} - ${reg.conductor}</div>
+                            <div class="record-date">${reg.fecha} · ${reg.timestamp}</div>
+                        </div>
+                        ${currentRole === 'admin' ? `<button class="btn-danger btn-small" onclick="deleteRecord(${reg.id})">🗑️ Eliminar</button>` : ''}
+                    </div>
+                    <div class="record-details">
+                        <p><strong>Km Iniciales:</strong> ${reg.kmInicial || 'N/A'}</p>
+                        <p><strong>SOAT:</strong> ${reg.soat || 'N/A'} ${reg.fechaVencSoat ? `(Vence: ${reg.fechaVencSoat})` : ''}</p>
+                        <p><strong>Componentes Revisados:</strong> ${reg.condiciones.length} ✓</p>
+                        <p><strong>Equipos Disponibles:</strong> ${reg.herramientas.length} ✓</p>
+                        <p><strong>Calificación:</strong> ${reg.calificacion || 'N/A'}</p>
+                        ${reg.observaciones ? `<p><strong>Observaciones:</strong> ${reg.observaciones}</p>` : ''}
+                        ${reg.fotos && reg.fotos.length > 0 ? `
+                            <div class="record-photos">
+                                <h4>📸 Fotos Adjuntas (${reg.fotos.length})</h4>
+                                ${reg.fotos.map((foto, idx) => `
+                                    <img src="${foto.data}" onclick="viewPhoto('${foto.data}')" title="${foto.timestamp}">
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteRecord(id) {
+            if (currentRole !== 'admin') {
+                alert('Solo administradores pueden eliminar registros');
+                return;
+            }
+
+            if (confirm('¿Estás seguro de que deseas eliminar este registro?')) {
+                let registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
+                registros = registros.filter(reg => reg.id !== id);
+                localStorage.setItem('checklistRegistros', JSON.stringify(registros));
+                loadHistory();
+            }
+        }
+
+        function loadAdminPanel() {
+            loadUsersList();
+            loadStats();
+        }
+
+        function loadUsersList() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const usersList = document.getElementById('usersList');
+
+            usersList.innerHTML = Object.entries(users).map(([id, data]) => `
+                <div class="record-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong>${data.name || 'Sin nombre'}</strong> (${id})<br>
+                            <span style="color: #999; font-size: 12px;">
+                                Rol: <strong>${data.role === 'admin' ? '🔐 ADMINISTRADOR' : '👤 Usuario'}</strong>
+                            </span>
+                        </div>
+                        ${data.role !== 'admin' || id !== currentUser ? `
+                            <button class="btn-danger btn-small" onclick="deleteUser('${id}')">Eliminar</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addNewUser() {
+            if (currentRole !== 'admin') {
+                alert('Solo administradores pueden agregar usuarios');
+                return;
+            }
+
+            const id = document.getElementById('newUserID').value.trim();
+            const pass = document.getElementById('newUserPass').value.trim();
+            const role = document.getElementById('newUserRole').value;
+
+            if (!id || !pass) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            if (users[id]) {
+                alert('El usuario ya existe');
+                return;
+            }
+
+            users[id] = { password: pass, role: role, name: `Usuario ${id}` };
+            localStorage.setItem('users', JSON.stringify(users));
+
+            document.getElementById('newUserID').value = '';
+            document.getElementById('newUserPass').value = '';
+
+            loadUsersList();
+            alert('✓ Usuario agregado correctamente');
+        }
+
+        function deleteUser(id) {
+            if (currentRole !== 'admin') {
+                alert('Solo administradores pueden eliminar usuarios');
+                return;
+            }
+
+            if (id === currentUser) {
+                alert('No puedes eliminar tu propia cuenta');
+                return;
+            }
+
+            if (confirm('¿Estás seguro?')) {
+                let users = JSON.parse(localStorage.getItem('users') || '{}');
+                delete users[id];
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsersList();
+            }
+        }
+
+        function loadStats() {
+            const registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+
+            const stats = {
+                totalChecklists: registros.length,
+                totalUsers: Object.keys(users).length,
+                totalFotos: registros.reduce((sum, r) => sum + (r.fotos?.length || 0), 0),
+                vehiculos: [...new Set(registros.map(r => r.placa))]
+            };
+
+            document.getElementById('statsSection').innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <div class="record-item">
+                        <strong>📋 Total de Checklists</strong><br>
+                        <h3 style="color: #667eea; margin-top: 10px;">${stats.totalChecklists}</h3>
+                    </div>
+                    <div class="record-item">
+                        <strong>👥 Total de Usuarios</strong><br>
+                        <h3 style="color: #667eea; margin-top: 10px;">${stats.totalUsers}</h3>
+                    </div>
+                    <div class="record-item">
+                        <strong>📸 Total de Fotos</strong><br>
+                        <h3 style="color: #667eea; margin-top: 10px;">${stats.totalFotos}</h3>
+                    </div>
+                    <div class="record-item">
+                        <strong>🚗 Vehículos Diferentes</strong><br>
+                        <h3 style="color: #667eea; margin-top: 10px;">${stats.vehiculos.length}</h3>
+                    </div>
+                </div>
+            `;
+        }
+
+        function exportAllData() {
+            const data = {
+                checklists: JSON.parse(localStorage.getItem('checklistRegistros') || '[]'),
+                exportDate: new Date().toLocaleString('es-CO'),
+                exportedBy: currentUser
+            };
+
+            const json = JSON.stringify(data, null, 2);
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(json));
+            element.setAttribute('download', `checklist-backup-${Date.now()}.json`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function exportCSV() {
+            const registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
+            const headers = ['Fecha', 'Placa', 'Conductor', 'Km', 'SOAT', 'Calificación', 'Fotos', 'Usuario', 'Timestamp'];
+
+            let csv = headers.join(',') + '\n';
+
+            registros.forEach(reg => {
+                csv += [
+                    reg.fecha,
+                    reg.placa,
+                    reg.conductor,
+                    reg.kmInicial || '',
+                    reg.soat || '',
+                    reg.calificacion || '',
+                    reg.fotos?.length || 0,
+                    reg.usuario,
+                    reg.timestamp
+                ].join(',') + '\n';
+            });
+
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+            element.setAttribute('download', `checklist-reporte-${Date.now()}.csv`);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function clearAllDataAdmin() {
+            if (currentRole !== 'admin') {
+                alert('Solo administradores pueden hacer esto');
+                return;
+            }
+
+            if (confirm('⚠️ ¿Estás seguro? Esto eliminará TODOS los registros.')) {
+                if (confirm('Esta acción NO se puede deshacer. ¿Continuar?')) {
+                    localStorage.removeItem('checklistRegistros');
+                    alert('✓ Todos los datos han sido eliminados');
+                    loadAdminPanel();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
