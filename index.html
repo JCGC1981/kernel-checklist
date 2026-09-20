@@ -33,6 +33,33 @@
             display: block;
         }
 
+        .login-logo {
+            background: #000;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 0 auto 20px;
+            max-width: 280px;
+        }
+
+        .login-logo img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            height: 60px;
+            width: auto;
+            border-radius: 6px;
+            background: #000;
+        }
+
         .login-container h1 {
             text-align: center;
             color: #667eea;
@@ -731,8 +758,11 @@
 <body>
     <!-- Panel de Login -->
     <div class="login-container show" id="loginContainer">
-        <h1>🔐 Checklist de Vehículos</h1>
-        <p>Kernel Energy - Acceso Seguro</p>
+        <div class="login-logo">
+            <img src="logo.jpg" alt="Kernel Energy">
+        </div>
+        <h1>Checklist Vehículos</h1>
+        <p>Acceso Seguro</p>
 
         <div class="login-info">
             <strong>Credenciales de Demo:</strong><br>
@@ -765,9 +795,12 @@
     <!-- Aplicación Principal -->
     <div class="app-container" id="appContainer">
         <header>
-            <div>
-                <h1>🚗 Checklist Diario</h1>
-                <p style="font-size: 13px; opacity: 0.9;">Kernel Energy</p>
+            <div class="header-brand">
+                <img src="logo.jpg" alt="Kernel Energy" class="header-logo">
+                <div>
+                    <h1>Checklist Vehículos</h1>
+                    <p style="font-size: 13px; opacity: 0.9;">Kernel Energy</p>
+                </div>
             </div>
             <div class="user-info">
                 <div class="user-badge" id="userRoleBadge">Usuario</div>
@@ -1072,7 +1105,9 @@
     <!-- Modal de Bienvenida para Conductores -->
     <div class="welcome-modal" id="welcomeModal">
         <div class="welcome-content">
-            <div class="welcome-icon">🚗</div>
+            <div class="login-logo">
+                <img src="logo.jpg" alt="Kernel Energy">
+            </div>
             <h2>¡Bienvenido a tu Jornada!</h2>
 
             <div class="welcome-message">
