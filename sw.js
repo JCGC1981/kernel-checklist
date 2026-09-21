@@ -1,4 +1,4 @@
-const CACHE = 'kernel-checklist-v1';
+const CACHE = 'kernel-checklist-v3';
 const FILES = ['./', './index.html', './logo.jpg', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

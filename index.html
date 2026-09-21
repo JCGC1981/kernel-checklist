@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Diario de Vehículos - Kernel Energy (Seguro)</title>
+    <title>Checklist Vehículos - Kernel Energy</title>
     <meta name="theme-color" content="#667eea">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon-192.png">
@@ -12,830 +12,223 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Checklist KE">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
         }
-
         .login-container {
-            max-width: 400px;
-            margin: 100px auto 0;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px 30px;
-            display: none;
+            max-width: 400px; margin: 60px auto 0; background: white; border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 40px 30px; display: none;
         }
-
-        .login-container.show {
-            display: block;
-        }
-
-        .login-logo {
-            background: #000;
-            border-radius: 10px;
-            padding: 15px 20px;
-            margin: 0 auto 20px;
-            max-width: 280px;
-        }
-
-        .login-logo img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header-logo {
-            height: 60px;
-            width: auto;
-            border-radius: 6px;
-            background: #000;
-        }
-
-        .login-container h1 {
-            text-align: center;
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-
-        .login-container p {
-            text-align: center;
-            color: #999;
-            margin-bottom: 30px;
-            font-size: 13px;
-        }
-
-        .login-form-group {
-            margin-bottom: 20px;
-        }
-
-        .login-form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .login-form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .login-form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
+        .login-container.show { display: block; }
+        .login-logo { background: #000; border-radius: 10px; padding: 15px 20px; margin: 0 auto 20px; max-width: 280px; }
+        .login-logo img { width: 100%; height: auto; display: block; }
+        .login-container h1 { text-align: center; color: #667eea; margin-bottom: 6px; font-size: 24px; }
+        .login-container p { text-align: center; color: #999; margin-bottom: 26px; font-size: 13px; }
+        .login-form-group { margin-bottom: 18px; }
+        .login-form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        .login-form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
         .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s;
+            width: 100%; padding: 13px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; border: none; border-radius: 5px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 6px;
         }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .login-error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            font-size: 13px;
-        }
-
-        .login-error.show {
-            display: block;
-        }
-
-        .login-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 12px;
-            line-height: 1.5;
-        }
+        .login-btn:disabled { opacity: 0.6; cursor: wait; }
+        .msg { padding: 12px; border-radius: 5px; margin-bottom: 16px; display: none; font-size: 14px; line-height: 1.5; }
+        .msg.show { display: block; }
+        .msg-error { background: #f8d7da; color: #721c24; }
+        .msg-ok { background: #d4edda; color: #155724; }
+        .msg-warn { background: #fff3cd; color: #856404; }
+        .msg-info { background: #d1ecf1; color: #0c5460; }
 
         .app-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-            display: none;
+            max-width: 1000px; margin: 0 auto; background: white; border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; display: none;
         }
-
-        .app-container.show {
-            display: block;
-        }
-
+        .app-container.show { display: block; }
         header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
         }
+        .header-brand { display: flex; align-items: center; gap: 14px; }
+        .header-logo { height: 56px; width: auto; border-radius: 6px; background: #000; }
+        header h1 { font-size: 22px; }
+        .user-info { text-align: right; font-size: 12px; }
+        .user-badge { display: inline-block; background: rgba(255,255,255,0.3); padding: 4px 12px; border-radius: 20px; margin-bottom: 6px; font-weight: 600; }
+        .user-badge.admin { background: #ff6b6b; }
+        .logout-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid white; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; margin-top: 6px; }
 
-        header h1 {
-            font-size: 24px;
+        .tabs { display: flex; background: #f5f5f5; border-bottom: 2px solid #ddd; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 120px; padding: 15px; border: none; background: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #666; }
+        .tab-btn.active { color: #667eea; border-bottom: 3px solid #667eea; margin-bottom: -2px; }
+        .tab-btn.admin-only { color: #ff6b6b; }
+        .tab-btn.admin-only.active { border-bottom-color: #ff6b6b; }
+        .content { padding: 24px 18px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
+        input[type="text"], input[type="date"], input[type="number"], input[type="password"], select, textarea {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; font-family: inherit;
         }
+        select:disabled { background: #f0f0f0; color: #333; }
+        textarea { resize: vertical; min-height: 80px; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+        .checkbox-item { display: flex; align-items: center; padding: 10px; background: #f9f9f9; border-radius: 5px; border: 1px solid #e0e0e0; }
+        .checkbox-item input { width: 20px; height: 20px; cursor: pointer; margin-right: 10px; accent-color: #667eea; }
+        .checkbox-item label { margin: 0; font-weight: 500; cursor: pointer; flex: 1; }
+        .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
+        .radio-item { display: flex; align-items: center; }
+        .radio-item input { width: 20px; height: 20px; margin-right: 8px; accent-color: #667eea; }
+        .radio-item label { margin: 0; cursor: pointer; font-weight: 500; }
+        .section-title { font-size: 18px; font-weight: 700; color: #667eea; margin: 25px 0 15px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; }
 
-        .user-info {
-            text-align: right;
-            font-size: 12px;
-        }
-
-        .user-badge {
-            display: inline-block;
-            background: rgba(255,255,255,0.3);
-            padding: 4px 12px;
-            border-radius: 20px;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .user-badge.admin {
-            background: #ff6b6b;
-        }
-
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid white;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .tabs {
-            display: flex;
-            background: #f5f5f5;
-            border-bottom: 2px solid #ddd;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            flex: 1;
-            min-width: 120px;
-            padding: 15px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            transition: all 0.3s;
-        }
-
-        .tab-btn.active {
-            color: #667eea;
-            border-bottom: 3px solid #667eea;
-            margin-bottom: -2px;
-        }
-
-        .tab-btn:hover {
-            background: #eee;
-        }
-
-        .tab-btn.admin-only {
-            color: #ff6b6b;
-        }
-
-        .tab-btn.admin-only.active {
-            border-bottom-color: #ff6b6b;
-            color: #ff6b6b;
-        }
-
-        .tab-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .content {
-            padding: 30px 20px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="number"],
-        input[type="email"],
-        input[type="password"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            font-family: inherit;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 5px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .checkbox-item input[type="checkbox"],
-        .checkbox-item input[type="radio"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-            margin-right: 10px;
-            accent-color: #667eea;
-        }
-
-        .checkbox-item label {
-            margin: 0;
-            font-weight: 500;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .radio-item {
-            display: flex;
-            align-items: center;
-        }
-
-        .radio-item label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #667eea;
-            margin: 25px 0 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
-        .camera-section {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 5px;
-            border: 2px solid #e0e0e0;
-            margin-bottom: 20px;
-        }
-
-        .camera-preview {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 5px;
-            margin: 10px 0;
-            display: none;
-        }
-
-        .camera-preview.show {
-            display: block;
-        }
-
-        .photo-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .photo-item {
-            position: relative;
-            border-radius: 5px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            cursor: pointer;
-        }
-
+        .camera-section { background: #f9f9f9; padding: 16px; border-radius: 5px; border: 2px solid #e0e0e0; margin-bottom: 20px; }
+        .camera-preview { width: 100%; max-width: 400px; border-radius: 5px; margin: 10px 0; display: none; }
+        .camera-preview.show { display: block; }
+        .photo-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 15px; }
+        .photo-item { position: relative; border-radius: 5px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+        .photo-item img { width: 100%; height: 130px; object-fit: cover; cursor: pointer; display: block; }
         .photo-item .delete-photo {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
+            position: absolute; top: 5px; right: 5px; background: #ff6b6b; color: white; border: none;
+            width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 18px; line-height: 1;
         }
 
-        .photo-item:hover .delete-photo {
-            opacity: 1;
-        }
+        .button-group { display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
+        button { padding: 12px 22px; border: none; border-radius: 5px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        button:disabled { opacity: 0.6; cursor: wait; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; flex: 1; min-width: 150px; }
+        .btn-secondary { background: #e0e0e0; color: #333; flex: 1; min-width: 150px; }
+        .btn-danger { background: #ff6b6b; color: white; }
+        .btn-small { padding: 8px 12px; min-width: auto; flex: 0; font-size: 13px; }
 
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
+        .record-item { background: #f9f9f9; border: 1px solid #ddd; border-radius: 5px; padding: 15px; margin-bottom: 15px; }
+        .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
+        .record-vehicle { font-weight: 600; color: #667eea; font-size: 16px; }
+        .record-date { color: #999; font-size: 13px; }
+        .record-details { font-size: 14px; color: #555; line-height: 1.7; }
+        .record-photos { margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; }
+        .record-photos a { display: inline-block; margin: 4px 8px 4px 0; color: #667eea; font-weight: 600; }
 
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+        .admin-section { background: #fff3cd; border-left: 4px solid #ff6b6b; padding: 18px; border-radius: 5px; margin-bottom: 20px; }
+        .admin-section h3 { color: #ff6b6b; margin-bottom: 12px; }
+        .user-form { display: grid; grid-template-columns: 1fr 1.3fr 1.5fr 1fr 1fr auto; gap: 10px; }
+        input[type="email"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; font-family: inherit; }
+        .empty-state { text-align: center; padding: 40px 20px; color: #999; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .stats h3 { color: #667eea; margin-top: 8px; font-size: 28px; }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            flex: 1;
-            min-width: 150px;
-        }
+        .modal { display: none; position: fixed; z-index: 1000; inset: 0; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 600px; width: 92%; position: relative; }
+        .modal-close { position: absolute; top: 4px; right: 10px; background: none; border: none; font-size: 30px; cursor: pointer; color: #999; padding: 0; }
+        .modal img { max-width: 100%; border-radius: 5px; margin-top: 20px; display: block; }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .btn-secondary:hover {
-            background: #d0d0d0;
-        }
-
-        .btn-danger {
-            background: #ff6b6b;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #ee5a52;
-        }
-
-        .btn-small {
-            padding: 8px 12px;
-            min-width: auto;
-            flex: 0;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        .warning-message {
-            background: #fff3cd;
-            color: #856404;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .warning-message.show {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .record-item {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .record-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .record-vehicle {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 16px;
-        }
-
-        .record-date {
-            color: #999;
-            font-size: 13px;
-        }
-
-        .record-details {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        .record-photos {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-        }
-
-        .record-photos h4 {
-            margin-bottom: 10px;
-            color: #667eea;
-        }
-
-        .record-photos img {
-            max-width: 200px;
-            height: auto;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-        }
-
-        .modal.show {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .modal img {
-            max-width: 100%;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-
-        .admin-section {
-            background: #fff3cd;
-            border-left: 4px solid #ff6b6b;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .admin-section h3 {
-            color: #ff6b6b;
-            margin-bottom: 15px;
-        }
-
-        .read-only-message {
-            background: #d1ecf1;
-            color: #0c5460;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #999;
-        }
-
-        .welcome-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .welcome-modal.show {
-            display: flex;
-        }
-
-        .welcome-content {
-            background: white;
-            border-radius: 10px;
-            padding: 40px;
-            max-width: 600px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideDown 0.5s ease;
-        }
-
-        .welcome-content h2 {
-            color: #667eea;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
+        .welcome-modal { display: none; position: fixed; z-index: 2000; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
+        .welcome-modal.show { display: flex; }
+        .welcome-content { background: white; border-radius: 10px; padding: 32px 28px; max-width: 600px; width: 92%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideDown 0.5s ease; }
+        .welcome-content h2 { color: #667eea; font-size: 26px; margin-bottom: 16px; }
         .welcome-message {
-            font-size: 16px;
-            line-height: 1.8;
-            color: #333;
-            font-weight: 500;
-            margin: 30px 0;
-            padding: 25px;
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
+            font-size: 16px; line-height: 1.8; color: #333; font-weight: 500; margin: 24px 0; padding: 22px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-radius: 8px; border-left: 4px solid #667eea;
         }
-
-        .welcome-icon {
-            font-size: 60px;
-            margin-bottom: 20px;
-        }
-
-        .welcome-subtext {
-            color: #666;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-
-        .welcome-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 14px 40px;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 25px;
-        }
-
-        .welcome-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        .welcome-subtext { color: #666; font-size: 14px; }
+        .welcome-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 36px; font-size: 16px; margin-top: 22px; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
 
         @media (max-width: 600px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .user-info {
-                text-align: center;
-                margin-top: 15px;
-            }
-
-            .tabs {
-                flex-wrap: wrap;
-            }
-
-            .tab-btn {
-                flex: 1 1 50%;
-            }
-
-            .content {
-                padding: 20px 15px;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            button {
-                width: 100%;
-            }
-
-            .photo-gallery {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
+            body { padding: 8px; }
+            .login-container { margin-top: 20px; padding: 28px 20px; }
+            header { flex-direction: column; text-align: center; }
+            .header-brand { flex-direction: column; }
+            .user-info { text-align: center; }
+            .tab-btn { flex: 1 1 50%; }
+            .content { padding: 18px 14px; }
+            .button-group { flex-direction: column; }
+            button { width: 100%; }
+            .btn-small { width: auto; }
+            .user-form { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <!-- Panel de Login -->
+    <!-- LOGIN -->
     <div class="login-container show" id="loginContainer">
-        <div class="login-logo">
-            <img src="logo.jpg" alt="Kernel Energy">
-        </div>
+        <div class="login-logo"><img src="logo.jpg" alt="Kernel Energy"></div>
         <h1>Checklist Vehículos</h1>
         <p>Acceso Seguro</p>
-
-        <div class="login-error" id="loginError"></div>
-
+        <div class="msg msg-error" id="loginError"></div>
         <form id="loginForm">
             <div class="login-form-group">
                 <label>Usuario (Cédula/ID)</label>
-                <input type="text" id="loginUser" placeholder="Ingresa tu cédula o ID" required>
+                <input type="text" id="loginUser" inputmode="numeric" autocomplete="username" placeholder="Ingresa tu cédula o ID" required>
             </div>
-
             <div class="login-form-group">
                 <label>Contraseña</label>
-                <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" required>
+                <input type="password" id="loginPassword" autocomplete="current-password" placeholder="Ingresa tu contraseña" required>
             </div>
-
-            <button type="submit" class="login-btn">Ingresar</button>
+            <button type="submit" class="login-btn" id="loginBtn">Ingresar</button>
         </form>
 
-        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: #999;">
-            <p>🛡️ Esta aplicación es segura y privada</p>
-            <p>Los datos nunca se envían a internet</p>
+        <form id="codeForm" style="display:none;">
+            <div class="msg msg-info show" id="codeInfo"></div>
+            <div class="login-form-group">
+                <label>Código de verificación</label>
+                <input type="text" id="loginCode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code"
+                       placeholder="6 dígitos" required style="text-align:center; font-size:26px; letter-spacing:8px;">
+            </div>
+            <button type="submit" class="login-btn" id="codeBtn">Verificar</button>
+            <div style="display:flex; justify-content:space-between; margin-top:14px; font-size:13px;">
+                <a href="#" onclick="reenviarCodigo(); return false;" style="color:#667eea;">Reenviar código</a>
+                <a href="#" onclick="cancelarCodigo(); return false;" style="color:#999;">Cancelar</a>
+            </div>
+        </form>
+
+        <div style="text-align:center; margin-top:20px; font-size:12px; color:#999;">
+            <p>🛡️ Conexión segura · Verificación en dos pasos</p>
         </div>
     </div>
 
-    <!-- Aplicación Principal -->
+    <!-- APP -->
     <div class="app-container" id="appContainer">
         <header>
             <div class="header-brand">
                 <img src="logo.jpg" alt="Kernel Energy" class="header-logo">
                 <div>
                     <h1>Checklist Vehículos</h1>
-                    <p style="font-size: 13px; opacity: 0.9;">Kernel Energy</p>
+                    <p style="font-size:13px; opacity:0.9;">Kernel Energy</p>
                 </div>
             </div>
             <div class="user-info">
                 <div class="user-badge" id="userRoleBadge">Usuario</div>
-                <div style="margin-bottom: 10px;">
-                    <span id="currentUser">Usuario</span><br>
-                    <span id="sessionTime" style="font-size: 11px;"></span>
-                </div>
+                <div><span id="currentUserName">Usuario</span></div>
                 <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
             </div>
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('new')">Nuevo Checklist</button>
-            <button class="tab-btn" onclick="switchTab('history')">Historial</button>
-            <button class="tab-btn admin-only" id="adminTabBtn" onclick="switchTab('admin')">⚙️ Administrador</button>
+            <button class="tab-btn active" data-tab="new" onclick="switchTab('new', this)">Nuevo Checklist</button>
+            <button class="tab-btn admin-only" id="historyTabBtn" data-tab="history" onclick="switchTab('history', this)">Historial</button>
+            <button class="tab-btn admin-only" id="adminTabBtn" data-tab="admin" onclick="switchTab('admin', this)">⚙️ Administrador</button>
         </div>
 
         <div class="content">
-            <!-- Nueva Inspección -->
+            <!-- NUEVO CHECKLIST -->
             <div id="new" class="tab-content active">
-                <div class="success-message" id="successMessage">
-                    ✓ Checklist guardado correctamente
-                </div>
-
-                <div class="warning-message" id="warningMessage"></div>
+                <div class="msg msg-ok" id="successMessage"></div>
+                <div class="msg msg-warn" id="warningMessage"></div>
+                <div class="msg msg-info" id="pendingMessage"></div>
 
                 <form id="checklistForm">
-                    <!-- Información del Vehículo -->
                     <div class="section-title">📋 Información del Vehículo</div>
-
                     <div class="form-group">
                         <label>Fecha</label>
                         <input type="date" id="fecha" required>
                     </div>
-
                     <div class="form-group">
                         <label>Placa del Vehículo</label>
                         <select id="placa" required>
@@ -846,7 +239,6 @@
                             <option value="JOL153">JOL153</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label>Conductor</label>
                         <select id="conductor" required>
@@ -857,799 +249,616 @@
                             <option value="Juan Carlos Polo">Juan Carlos Polo</option>
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label>Kilómetros Iniciales</label>
-                        <input type="number" id="kmInicial" placeholder="Ej: 45000">
+                        <input type="number" id="kmInicial" inputmode="numeric" placeholder="Ej: 45000">
                     </div>
 
-                    <!-- SOAT -->
                     <div class="section-title">🛡️ Seguro SOAT</div>
-
                     <div class="form-group">
                         <label>Estado del SOAT</label>
                         <div class="radio-group">
-                            <div class="radio-item">
-                                <input type="radio" name="soat" value="vigente" id="soatVigente">
-                                <label for="soatVigente">Vigente</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="soat" value="proxVencer" id="soatProxVencer">
-                                <label for="soatProxVencer">Próximo a Vencer</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="soat" value="vencido" id="soatVencido">
-                                <label for="soatVencido">Vencido</label>
-                            </div>
+                            <div class="radio-item"><input type="radio" name="soat" value="Vigente" id="soatVigente"><label for="soatVigente">Vigente</label></div>
+                            <div class="radio-item"><input type="radio" name="soat" value="Próximo a vencer" id="soatProxVencer"><label for="soatProxVencer">Próximo a Vencer</label></div>
+                            <div class="radio-item"><input type="radio" name="soat" value="Vencido" id="soatVencido"><label for="soatVencido">Vencido</label></div>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label>Fecha de Vencimiento SOAT</label>
                         <input type="date" id="fechaVencSoat">
                     </div>
 
-                    <!-- Revisión del Vehículo -->
                     <div class="section-title">🔧 Revisión del Vehículo</div>
-
                     <div class="form-group">
-                        <label>Condiciones Generales</label>
+                        <label>Marca los componentes en buen estado</label>
                         <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="motor" name="condicion">
-                                <label for="motor">Motor</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="frenos" name="condicion">
-                                <label for="frenos">Frenos</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="llantas" name="condicion">
-                                <label for="llantas">Llantas</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="luces" name="condicion">
-                                <label for="luces">Luces</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="limpiaparabrisas" name="condicion">
-                                <label for="limpiaparabrisas">Limpiaparabrisas</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="espejos" name="condicion">
-                                <label for="espejos">Espejos</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="direccion" name="condicion">
-                                <label for="direccion">Dirección</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="suspension" name="condicion">
-                                <label for="suspension">Suspensión</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="aire" name="condicion">
-                                <label for="aire">Aire Acondicionado</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="cristales" name="condicion">
-                                <label for="cristales">Cristales</label>
-                            </div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Motor" id="c1"><label for="c1">Motor</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Frenos" id="c2"><label for="c2">Frenos</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Llantas" id="c3"><label for="c3">Llantas</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Luces" id="c4"><label for="c4">Luces</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Limpiaparabrisas" id="c5"><label for="c5">Limpiaparabrisas</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Espejos" id="c6"><label for="c6">Espejos</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Dirección" id="c7"><label for="c7">Dirección</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Suspensión" id="c8"><label for="c8">Suspensión</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Aire Acondicionado" id="c9"><label for="c9">Aire Acondicionado</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="condicion" value="Cristales" id="c10"><label for="c10">Cristales</label></div>
                         </div>
                     </div>
 
-                    <!-- Herramientas de Seguridad -->
                     <div class="section-title">🧰 Herramientas y Equipos de Seguridad</div>
-
                     <div class="form-group">
-                        <label>Equipos Disponibles</label>
+                        <label>Marca los equipos disponibles</label>
                         <div class="checkbox-group">
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="botiquín" name="herramientas">
-                                <label for="botiquín">Botiquín de Primeros Auxilios</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="triangulos" name="herramientas">
-                                <label for="triangulos">Triángulos de Seguridad</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="chalecos" name="herramientas">
-                                <label for="chalecos">Chalecos Reflectivos</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="linterna" name="herramientas">
-                                <label for="linterna">Linterna/Luz de Emergencia</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="herramientaBasica" name="herramientas">
-                                <label for="herramientaBasica">Herramientas Básicas</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="extintor" name="herramientas">
-                                <label for="extintor">Extintor</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="repuesto" name="herramientas">
-                                <label for="repuesto">Llanta de Repuesto</label>
-                            </div>
-                            <div class="checkbox-item">
-                                <input type="checkbox" id="gata" name="herramientas">
-                                <label for="gata">Gata</label>
-                            </div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Botiquín" id="h1"><label for="h1">Botiquín de Primeros Auxilios</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Triángulos" id="h2"><label for="h2">Triángulos de Seguridad</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Chalecos" id="h3"><label for="h3">Chalecos Reflectivos</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Linterna" id="h4"><label for="h4">Linterna/Luz de Emergencia</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Herramientas básicas" id="h5"><label for="h5">Herramientas Básicas</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Extintor" id="h6"><label for="h6">Extintor</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Llanta de repuesto" id="h7"><label for="h7">Llanta de Repuesto</label></div>
+                            <div class="checkbox-item"><input type="checkbox" name="herramientas" value="Gata" id="h8"><label for="h8">Gata</label></div>
                         </div>
                     </div>
 
-                    <!-- Estado General del Vehículo -->
                     <div class="section-title">📊 Estado General del Vehículo</div>
-
                     <div class="form-group">
                         <label>Calificación General</label>
                         <div class="radio-group">
-                            <div class="radio-item">
-                                <input type="radio" name="calificacion" value="excelente" id="excelente">
-                                <label for="excelente">✅ Excelente</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="calificacion" value="bueno" id="bueno">
-                                <label for="bueno">👍 Bueno</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="calificacion" value="regular" id="regular">
-                                <label for="regular">⚠️ Regular</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="calificacion" value="malo" id="malo">
-                                <label for="malo">❌ Malo</label>
-                            </div>
+                            <div class="radio-item"><input type="radio" name="calificacion" value="Excelente" id="excelente" required><label for="excelente">✅ Excelente</label></div>
+                            <div class="radio-item"><input type="radio" name="calificacion" value="Bueno" id="bueno"><label for="bueno">👍 Bueno</label></div>
+                            <div class="radio-item"><input type="radio" name="calificacion" value="Regular" id="regular"><label for="regular">⚠️ Regular</label></div>
+                            <div class="radio-item"><input type="radio" name="calificacion" value="Malo" id="malo"><label for="malo">❌ Malo</label></div>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label>Problemas Detectados o Observaciones</label>
+                        <label>Problemas Detectados u Observaciones</label>
                         <textarea id="observaciones" placeholder="Describe cualquier problema, daño o situación que requiera atención..."></textarea>
                     </div>
 
-                    <!-- Captura de Fotos -->
                     <div class="section-title">📸 Fotos de Evidencia (Opcional)</div>
-
                     <div class="camera-section">
-                        <p style="margin-bottom: 15px; color: #555;">
-                            📷 Toma fotos de cualquier daño o anomalía detectada para documentar mejor el estado del vehículo.
-                        </p>
-
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                            <button type="button" class="btn-primary btn-small" onclick="openCamera()">
-                                📷 Abrir Cámara
-                            </button>
-                            <button type="button" class="btn-secondary btn-small" onclick="uploadPhoto()">
-                                📁 Subir Foto
-                            </button>
-                            <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                        <p style="margin-bottom:14px; color:#555;">Toma fotos de cualquier daño o novedad detectada.</p>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button type="button" class="btn-primary btn-small" onclick="openCamera()">📷 Abrir Cámara</button>
+                            <button type="button" class="btn-secondary btn-small" onclick="document.getElementById('photoUpload').click()">📁 Subir Foto</button>
+                            <input type="file" id="photoUpload" accept="image/*" capture="environment" style="display:none;">
                         </div>
-
-                        <video id="cameraPreview" class="camera-preview" style="max-width: 100%; border-radius: 5px;"></video>
-
-                        <div style="display: none;" id="cameraControls">
+                        <video id="cameraPreview" class="camera-preview" autoplay playsinline muted></video>
+                        <div style="display:none; gap:10px; margin-top:10px;" id="cameraControls">
                             <button type="button" class="btn-primary btn-small" onclick="capturePhoto()">✓ Capturar</button>
                             <button type="button" class="btn-secondary btn-small" onclick="closeCamera()">✕ Cancelar</button>
                         </div>
-
                         <div class="photo-gallery" id="photoGallery"></div>
                     </div>
 
                     <div class="button-group">
-                        <button type="submit" class="btn-primary">💾 Guardar Checklist</button>
-                        <button type="reset" class="btn-secondary">🔄 Limpiar Formulario</button>
+                        <button type="submit" class="btn-primary" id="saveBtn">📤 Enviar Checklist</button>
+                        <button type="reset" class="btn-secondary" onclick="currentPhotos=[];updatePhotoGallery()">🔄 Limpiar Formulario</button>
                     </div>
                 </form>
             </div>
 
-            <!-- Historial -->
+            <!-- HISTORIAL (solo admin) -->
             <div id="history" class="tab-content">
-                <h2 style="margin-bottom: 20px;">Historial de Checklists</h2>
-                <div class="read-only-message" id="readOnlyMsg" style="display: none;">
-                    🔒 Modo solo lectura: Solo administradores pueden eliminar registros
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+                    <h2>Historial de Checklists</h2>
+                    <button class="btn-secondary btn-small" onclick="loadHistory()">🔄 Actualizar</button>
                 </div>
-                <div id="historyList"></div>
+                <div id="historyList"><div class="empty-state">Cargando...</div></div>
             </div>
 
-            <!-- Panel de Administrador -->
+            <!-- ADMIN -->
             <div id="admin" class="tab-content">
                 <div class="admin-section">
                     <h3>🛡️ Panel de Control Administrativo</h3>
-                    <p style="margin-bottom: 15px; color: #555;">
-                        Aquí puedes gestionar la aplicación, modificar accesos y generar reportes.
-                    </p>
-
-                    <div class="button-group">
-                        <button class="btn-primary" onclick="exportAllData()">📥 Descargar Todos los Datos (JSON)</button>
-                        <button class="btn-primary" onclick="exportCSV()">📊 Descargar Reporte (CSV)</button>
-                        <button class="btn-danger" onclick="clearAllDataAdmin()">🗑️ Eliminar Todo</button>
+                    <div class="button-group" style="margin-top:10px;">
+                        <button class="btn-primary" onclick="openSheet()">📗 Abrir Google Sheet</button>
+                        <button class="btn-primary" onclick="exportCSV()">📊 Descargar CSV</button>
                     </div>
                 </div>
 
-                <div class="section-title">📋 Gestión de Usuarios</div>
+                <div class="section-title">📊 Estadísticas</div>
+                <div id="statsSection" class="stats"></div>
 
+                <div class="section-title">👥 Agregar Usuario</div>
+                <div class="msg msg-error" id="userError"></div>
                 <div class="form-group">
-                    <label>Agregar Nuevo Usuario</label>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px;">
+                    <div class="user-form">
                         <input type="text" id="newUserID" placeholder="Cédula/ID">
+                        <input type="text" id="newUserName" placeholder="Nombre completo">
+                        <input type="email" id="newUserEmail" placeholder="Correo (opcional en conductores)">
                         <input type="password" id="newUserPass" placeholder="Contraseña">
                         <select id="newUserRole">
-                            <option value="usuario">Usuario Normal</option>
+                            <option value="conductor">Conductor</option>
                             <option value="admin">Administrador</option>
                         </select>
-                        <button type="button" class="btn-primary btn-small" onclick="addNewUser()">Agregar</button>
+                        <button type="button" class="btn-primary btn-small" id="addUserBtn" onclick="addNewUser()">Agregar</button>
                     </div>
                 </div>
 
                 <div class="section-title">👥 Usuarios Existentes</div>
-
                 <div id="usersList"></div>
-
-                <div class="section-title">📊 Estadísticas</div>
-
-                <div id="statsSection"></div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para ver foto -->
-    <div class="modal" id="photoModal">
+    <!-- MODAL FOTO -->
+    <div class="modal" id="photoModal" onclick="if(event.target===this)closePhotoModal()">
         <div class="modal-content">
             <button class="modal-close" onclick="closePhotoModal()">×</button>
-            <img id="modalPhoto" style="max-width: 100%; width: 100%;">
+            <img id="modalPhoto" alt="Foto">
         </div>
     </div>
 
-    <!-- Modal de Bienvenida para Conductores -->
+    <!-- BIENVENIDA CONDUCTORES -->
     <div class="welcome-modal" id="welcomeModal">
         <div class="welcome-content">
-            <div class="login-logo">
-                <img src="logo.jpg" alt="Kernel Energy">
-            </div>
+            <div class="login-logo"><img src="logo.jpg" alt="Kernel Energy"></div>
             <h2>¡Bienvenido a tu Jornada!</h2>
-
             <div class="welcome-message">
                 "Cada kilómetro de esta hora y media de ruta es el puente hacia tus metas, pero tu seguridad es la meta principal. Conduce con atención y serenidad; tu vida es el activo más valioso de nuestra empresa y tu hogar."
             </div>
-
             <div class="welcome-subtext">
                 <p>📍 Kernel Energy - Tu seguridad, Nuestra Prioridad</p>
-                <p style="margin-top: 10px; font-size: 13px;">Completa tu checklist diario y conduce con confianza</p>
             </div>
-
-            <button class="welcome-btn" onclick="closeWelcomeModal()">
-                ✓ Entendido - Comenzar Checklist
-            </button>
+            <button class="welcome-btn" onclick="closeWelcomeModal()">✓ Entendido - Comenzar Checklist</button>
         </div>
     </div>
 
-    <!-- Input oculto para archivo -->
-    <input type="file" id="fileInput" accept="image/*" style="display: none;">
-
     <script>
-        let currentUser = null;
-        let currentRole = null;
-        let sessionStartTime = null;
+        // ============ CONFIGURACIÓN ============
+        // Pega aquí la URL de la aplicación web publicada desde Google Apps Script
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzlWd6tNJ_DUerJ8BC0VSgVyFsgSGIJEH0-kTHydXYjgu_yJQRsB4dQdprcVSOQShsG/exec';
+
+        const SESSION_KEY = 'ke_sesion';
+        const PENDING_KEY = 'ke_pendientes';
+        const MAX_PHOTO_PX = 1280;
+
+        let sesion = null;
         let currentPhotos = [];
-
-        window.addEventListener('load', () => {
-            initApp();
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').catch(() => {});
-            }
-        });
-
-        function initApp() {
-            document.getElementById('fecha').valueAsDate = new Date();
-            setupEventListeners();
-            checkLoginStatus();
-            updateSessionTime();
-            setInterval(updateSessionTime, 1000);
-        }
-
-        function setupEventListeners() {
-            document.getElementById('loginForm').addEventListener('submit', handleLogin);
-            document.getElementById('checklistForm').addEventListener('submit', handleSaveChecklist);
-            document.getElementById('photoUpload').addEventListener('change', handlePhotoUpload);
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-
-            const user = document.getElementById('loginUser').value.trim();
-            const pass = document.getElementById('loginPassword').value.trim();
-
-            const loginError = document.getElementById('loginError');
-            loginError.classList.remove('show');
-
-            if (!user || !pass) {
-                showLoginError('Por favor completa todos los campos');
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('users') || '{}');
-
-            if (!users[user]) {
-                showLoginError('Usuario no encontrado');
-                return;
-            }
-
-            if (users[user].password !== pass) {
-                showLoginError('Contraseña incorrecta');
-                return;
-            }
-
-            currentUser = user;
-            currentRole = users[user].role;
-            sessionStartTime = new Date();
-
-            localStorage.setItem('currentSession', JSON.stringify({
-                user: currentUser,
-                role: currentRole,
-                startTime: sessionStartTime
-            }));
-
-            showApp();
-        }
-
-        function showLoginError(msg) {
-            const error = document.getElementById('loginError');
-            error.textContent = msg;
-            error.classList.add('show');
-        }
-
-        function checkLoginStatus() {
-            const session = JSON.parse(localStorage.getItem('currentSession') || 'null');
-
-            if (session && session.user) {
-                currentUser = session.user;
-                currentRole = session.role;
-                sessionStartTime = new Date(session.startTime);
-                showApp();
-            } else {
-                initializeUsers();
-            }
-        }
-
-        function initializeUsers() {
-            let users = JSON.parse(localStorage.getItem('users') || '{}');
-
-            if (Object.keys(users).length === 0) {
-                users = {
-                    '123456': { password: '1234', role: 'admin', name: 'Administrador' },
-                    '111111': { password: '1111', role: 'usuario', name: 'Jorge Alberto Prieto' },
-                    '222222': { password: '2222', role: 'usuario', name: 'Castor Paul Gonzalez' },
-                    '333333': { password: '3333', role: 'usuario', name: 'Julio Cesar Gomez' },
-                    '444444': { password: '4444', role: 'usuario', name: 'Juan Carlos Polo' }
-                };
-                localStorage.setItem('users', JSON.stringify(users));
-            }
-        }
-
-        function showApp() {
-            document.getElementById('loginContainer').classList.remove('show');
-            document.getElementById('appContainer').classList.add('show');
-
-            document.getElementById('currentUser').textContent = currentUser;
-
-            const badgeEl = document.getElementById('userRoleBadge');
-            if (currentRole === 'admin') {
-                badgeEl.textContent = '🔐 ADMINISTRADOR';
-                badgeEl.classList.add('admin');
-                document.getElementById('adminTabBtn').style.display = 'block';
-                document.getElementById('readOnlyMsg').style.display = 'none';
-            } else {
-                badgeEl.textContent = '👤 Usuario';
-                document.getElementById('adminTabBtn').style.display = 'none';
-                document.getElementById('readOnlyMsg').style.display = 'block';
-
-                showWelcomeModal();
-            }
-        }
-
-        function showWelcomeModal() {
-            document.getElementById('welcomeModal').classList.add('show');
-        }
-
-        function closeWelcomeModal() {
-            document.getElementById('welcomeModal').classList.remove('show');
-        }
-
-        function logout() {
-            if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-                localStorage.removeItem('currentSession');
-                currentUser = null;
-                currentRole = null;
-                currentPhotos = [];
-
-                document.getElementById('appContainer').classList.remove('show');
-                document.getElementById('loginContainer').classList.add('show');
-                document.getElementById('loginForm').reset();
-                document.getElementById('loginError').classList.remove('show');
-            }
-        }
-
-        function updateSessionTime() {
-            if (sessionStartTime) {
-                const elapsed = new Date() - sessionStartTime;
-                const minutes = Math.floor(elapsed / 60000);
-                const seconds = Math.floor((elapsed % 60000) / 1000);
-                document.getElementById('sessionTime').textContent =
-                    `Sesión: ${minutes}m ${seconds}s`;
-            }
-        }
-
+        let historialCache = [];
         let cameraStream = null;
 
+        // ============ API ============
+        async function api(action, data) {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(Object.assign({ action, token: sesion && sesion.token }, data || {}))
+            });
+            const json = await res.json();
+            if (!json.ok) {
+                if (/Sesión expirada/i.test(json.error || '')) { forceLogout(); }
+                throw new Error(json.error || 'Error desconocido');
+            }
+            return json;
+        }
+
+        function isOffline(err) {
+            return err instanceof TypeError || /Failed to fetch|NetworkError|Load failed/i.test(err.message || '');
+        }
+
+        // ============ INICIO ============
+        window.addEventListener('load', () => {
+            document.getElementById('fecha').valueAsDate = new Date();
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.getElementById('codeForm').addEventListener('submit', handleCode);
+            document.getElementById('checklistForm').addEventListener('submit', handleSaveChecklist);
+            document.getElementById('photoUpload').addEventListener('change', handlePhotoUpload);
+            window.addEventListener('online', enviarPendientes);
+
+            if (API_URL.startsWith('PEGAR_AQUI')) {
+                showMsg('loginError', 'La aplicación aún no está conectada a Google Sheets. Contacta al administrador.');
+                document.getElementById('loginBtn').disabled = true;
+                return;
+            }
+
+            try { sesion = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch (e) { sesion = null; }
+            if (sesion && sesion.token) showApp(false);
+
+            if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+        });
+
+        function showMsg(id, text, ms) {
+            const el = document.getElementById(id);
+            el.textContent = text;
+            el.classList.add('show');
+            if (ms) setTimeout(() => el.classList.remove('show'), ms);
+        }
+        function hideMsg(id) { document.getElementById(id).classList.remove('show'); }
+
+        // ============ LOGIN ============
+        let preAuth = null;
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideMsg('loginError');
+            const btn = document.getElementById('loginBtn');
+            const usuario = document.getElementById('loginUser').value.trim();
+            btn.disabled = true; btn.textContent = 'Verificando...';
+            try {
+                const r = await api('login', { usuario, clave: document.getElementById('loginPassword').value.trim() });
+                if (r.requiereCodigo) {
+                    preAuth = { pre: r.pre, usuario };
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('codeForm').style.display = 'block';
+                    document.getElementById('codeInfo').textContent = `📧 Enviamos un código de 6 dígitos a ${r.emailPista}. Revisa tu bandeja de entrada (y spam).`;
+                    document.getElementById('loginCode').value = '';
+                    document.getElementById('loginCode').focus();
+                } else {
+                    iniciarSesion(r, usuario);
+                }
+            } catch (err) {
+                showMsg('loginError', isOffline(err) ? 'Sin conexión a internet. Intenta de nuevo.' : err.message);
+            } finally {
+                btn.disabled = false; btn.textContent = 'Ingresar';
+            }
+        }
+
+        async function handleCode(e) {
+            e.preventDefault();
+            hideMsg('loginError');
+            const btn = document.getElementById('codeBtn');
+            btn.disabled = true; btn.textContent = 'Verificando...';
+            try {
+                const r = await api('verificarCodigo', { pre: preAuth.pre, codigo: document.getElementById('loginCode').value.trim() });
+                iniciarSesion(r, preAuth.usuario);
+            } catch (err) {
+                showMsg('loginError', isOffline(err) ? 'Sin conexión a internet.' : err.message);
+                if (/Vuelve a iniciar sesión/i.test(err.message)) cancelarCodigo(true);
+            } finally {
+                btn.disabled = false; btn.textContent = 'Verificar';
+            }
+        }
+
+        async function reenviarCodigo() {
+            hideMsg('loginError');
+            try {
+                await api('reenviarCodigo', { pre: preAuth.pre });
+                document.getElementById('codeInfo').textContent = '📧 Código reenviado. Revisa tu correo.';
+            } catch (err) {
+                showMsg('loginError', err.message);
+                if (/Vuelve a iniciar sesión/i.test(err.message)) cancelarCodigo(true);
+            }
+        }
+
+        function cancelarCodigo(mantenerError) {
+            preAuth = null;
+            document.getElementById('codeForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('loginPassword').value = '';
+            if (!mantenerError) hideMsg('loginError');
+        }
+
+        function iniciarSesion(r, usuario) {
+            sesion = { token: r.token, rol: r.rol, nombre: r.nombre, sheetUrl: r.sheetUrl || '', usuario };
+            localStorage.setItem(SESSION_KEY, JSON.stringify(sesion));
+            document.getElementById('loginForm').reset();
+            cancelarCodigo();
+            showApp(true);
+        }
+
+        function showApp(desdeLogin) {
+            document.getElementById('loginContainer').classList.remove('show');
+            document.getElementById('appContainer').classList.add('show');
+            document.getElementById('currentUserName').textContent = sesion.nombre;
+
+            const badge = document.getElementById('userRoleBadge');
+            const esAdmin = sesion.rol === 'admin';
+            badge.textContent = esAdmin ? '🔐 ADMINISTRADOR' : '🚗 Conductor';
+            badge.classList.toggle('admin', esAdmin);
+            document.getElementById('historyTabBtn').style.display = esAdmin ? '' : 'none';
+            document.getElementById('adminTabBtn').style.display = esAdmin ? '' : 'none';
+
+            const selConductor = document.getElementById('conductor');
+            const opt = Array.from(selConductor.options).find(o => o.value === sesion.nombre);
+            if (!esAdmin && opt) { selConductor.value = sesion.nombre; selConductor.disabled = true; }
+            else { selConductor.disabled = false; }
+
+            switchTab('new', document.querySelector('.tab-btn[data-tab="new"]'));
+            if (!esAdmin && desdeLogin) document.getElementById('welcomeModal').classList.add('show');
+            enviarPendientes();
+        }
+
+        function closeWelcomeModal() { document.getElementById('welcomeModal').classList.remove('show'); }
+
+        function logout() {
+            if (confirm('¿Cerrar sesión?')) forceLogout();
+        }
+        function forceLogout() {
+            localStorage.removeItem(SESSION_KEY);
+            sesion = null; currentPhotos = []; updatePhotoGallery();
+            document.getElementById('appContainer').classList.remove('show');
+            document.getElementById('loginContainer').classList.add('show');
+        }
+
+        // ============ TABS ============
+        function switchTab(tab, btn) {
+            if (tab !== 'new' && (!sesion || sesion.rol !== 'admin')) return;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            if (btn) btn.classList.add('active');
+            if (tab === 'history') loadHistory();
+            if (tab === 'admin') loadAdminPanel();
+        }
+
+        // ============ FOTOS ============
         async function openCamera() {
             try {
-                cameraStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment' }
-                });
-
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 const video = document.getElementById('cameraPreview');
                 video.srcObject = cameraStream;
                 video.classList.add('show');
                 document.getElementById('cameraControls').style.display = 'flex';
             } catch (err) {
-                alert('No se pudo acceder a la cámara. Por favor, verifica los permisos.');
+                alert('No se pudo abrir la cámara. Usa "Subir Foto" para tomar la foto con la cámara del teléfono.');
+                document.getElementById('photoUpload').click();
             }
         }
 
         function capturePhoto() {
             const video = document.getElementById('cameraPreview');
             const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
-            const photoData = canvas.toDataURL('image/jpeg', 0.7);
-
-            currentPhotos.push({
-                data: photoData,
-                timestamp: new Date().toLocaleString('es-CO')
-            });
-
-            updatePhotoGallery();
+            addPhoto(resizeCanvas(canvas));
             closeCamera();
         }
 
         function closeCamera() {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-                cameraStream = null;
-            }
-
+            if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
             document.getElementById('cameraPreview').classList.remove('show');
             document.getElementById('cameraControls').style.display = 'none';
-        }
-
-        function uploadPhoto() {
-            document.getElementById('photoUpload').click();
         }
 
         function handlePhotoUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                currentPhotos.push({
-                    data: event.target.result,
-                    timestamp: new Date().toLocaleString('es-CO')
-                });
-                updatePhotoGallery();
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width; canvas.height = img.height;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                addPhoto(resizeCanvas(canvas));
+                URL.revokeObjectURL(img.src);
             };
-            reader.readAsDataURL(file);
+            img.src = URL.createObjectURL(file);
+            e.target.value = '';
         }
 
-        function updatePhotoGallery() {
-            const gallery = document.getElementById('photoGallery');
-
-            if (currentPhotos.length === 0) {
-                gallery.innerHTML = '';
-                return;
-            }
-
-            gallery.innerHTML = currentPhotos.map((photo, idx) => `
-                <div class="photo-item">
-                    <img src="${photo.data}" onclick="viewPhoto(${idx})" alt="Foto ${idx + 1}">
-                    <button class="delete-photo" onclick="deletePhoto(${idx})">×</button>
-                </div>
-            `).join('');
+        function resizeCanvas(src) {
+            const scale = Math.min(1, MAX_PHOTO_PX / Math.max(src.width, src.height));
+            if (scale === 1) return src.toDataURL('image/jpeg', 0.75);
+            const c = document.createElement('canvas');
+            c.width = Math.round(src.width * scale); c.height = Math.round(src.height * scale);
+            c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+            return c.toDataURL('image/jpeg', 0.75);
         }
 
-        function deletePhoto(idx) {
-            currentPhotos.splice(idx, 1);
+        function addPhoto(dataUrl) {
+            currentPhotos.push({ data: dataUrl, timestamp: new Date().toLocaleString('es-CO') });
             updatePhotoGallery();
         }
 
-        function viewPhoto(idx) {
-            const modal = document.getElementById('photoModal');
-            document.getElementById('modalPhoto').src = currentPhotos[idx].data;
-            modal.classList.add('show');
+        function updatePhotoGallery() {
+            document.getElementById('photoGallery').innerHTML = currentPhotos.map((p, i) => `
+                <div class="photo-item">
+                    <img src="${p.data}" onclick="viewPhoto('${i}')" alt="Foto ${i + 1}">
+                    <button type="button" class="delete-photo" onclick="deletePhoto(${i})">×</button>
+                </div>`).join('');
         }
-
-        function closePhotoModal() {
-            document.getElementById('photoModal').classList.remove('show');
+        function deletePhoto(i) { currentPhotos.splice(i, 1); updatePhotoGallery(); }
+        function viewPhoto(i) {
+            document.getElementById('modalPhoto').src = currentPhotos[i].data;
+            document.getElementById('photoModal').classList.add('show');
         }
+        function closePhotoModal() { document.getElementById('photoModal').classList.remove('show'); }
 
-        function handleSaveChecklist(e) {
-            e.preventDefault();
-
-            const checklist = {
-                id: Date.now(),
+        // ============ ENVIAR CHECKLIST ============
+        function leerFormulario() {
+            return {
+                id: String(Date.now()),
                 fecha: document.getElementById('fecha').value,
                 placa: document.getElementById('placa').value,
                 conductor: document.getElementById('conductor').value,
                 kmInicial: document.getElementById('kmInicial').value,
-                soat: document.querySelector('input[name="soat"]:checked')?.value,
+                soat: (document.querySelector('input[name="soat"]:checked') || {}).value || '',
                 fechaVencSoat: document.getElementById('fechaVencSoat').value,
-                condiciones: Array.from(document.querySelectorAll('input[name="condicion"]:checked')).map(el => el.id),
-                herramientas: Array.from(document.querySelectorAll('input[name="herramientas"]:checked')).map(el => el.id),
-                calificacion: document.querySelector('input[name="calificacion"]:checked')?.value,
-                observaciones: document.getElementById('observaciones').value,
-                fotos: currentPhotos,
-                usuario: currentUser,
-                timestamp: new Date().toLocaleString('es-CO')
+                condiciones: Array.from(document.querySelectorAll('input[name="condicion"]:checked')).map(el => el.value),
+                herramientas: Array.from(document.querySelectorAll('input[name="herramientas"]:checked')).map(el => el.value),
+                calificacion: (document.querySelector('input[name="calificacion"]:checked') || {}).value || '',
+                observaciones: document.getElementById('observaciones').value.trim(),
+                fotos: currentPhotos
             };
+        }
 
-            let registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
-            registros.push(checklist);
-            localStorage.setItem('checklistRegistros', JSON.stringify(registros));
-
-            const successMsg = document.getElementById('successMessage');
-            successMsg.classList.add('show');
-            setTimeout(() => successMsg.classList.remove('show'), 3000);
-
-            this.reset();
+        function limpiarFormulario() {
+            const form = document.getElementById('checklistForm');
+            const conductor = document.getElementById('conductor').value;
+            form.reset();
             document.getElementById('fecha').valueAsDate = new Date();
-            currentPhotos = [];
-            updatePhotoGallery();
+            if (sesion.rol !== 'admin') document.getElementById('conductor').value = conductor;
+            currentPhotos = []; updatePhotoGallery();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-
-            if (tabName === 'history') {
-                loadHistory();
-            } else if (tabName === 'admin') {
-                if (currentRole !== 'admin') {
-                    alert('Acceso denegado: Solo administradores');
-                    switchTab('new');
-                    return;
+        async function handleSaveChecklist(e) {
+            e.preventDefault();
+            hideMsg('successMessage'); hideMsg('warningMessage');
+            const datos = leerFormulario();
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true; btn.textContent = '⏳ Enviando...';
+            try {
+                await api('guardar', { datos });
+                limpiarFormulario();
+                showMsg('successMessage', '✓ Checklist enviado correctamente a Kernel Energy', 5000);
+            } catch (err) {
+                if (isOffline(err)) {
+                    guardarPendiente(datos);
+                    limpiarFormulario();
+                    showMsg('warningMessage', '📶 Sin conexión. El checklist quedó guardado en este teléfono y se enviará automáticamente cuando haya internet.');
+                } else {
+                    showMsg('warningMessage', '❌ No se pudo enviar: ' + err.message);
                 }
-                loadAdminPanel();
+            } finally {
+                btn.disabled = false; btn.textContent = '📤 Enviar Checklist';
             }
         }
 
-        function loadHistory() {
-            const registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
-            const historyList = document.getElementById('historyList');
-
-            if (registros.length === 0) {
-                historyList.innerHTML = '<div class="empty-state">📭 No hay registros guardados aún</div>';
-                return;
+        // ============ COLA SIN CONEXIÓN ============
+        function getPendientes() { try { return JSON.parse(localStorage.getItem(PENDING_KEY)) || []; } catch (e) { return []; } }
+        function guardarPendiente(datos) {
+            const lista = getPendientes(); lista.push(datos);
+            try { localStorage.setItem(PENDING_KEY, JSON.stringify(lista)); }
+            catch (e) {
+                datos.fotos = [];
+                lista[lista.length - 1] = datos;
+                localStorage.setItem(PENDING_KEY, JSON.stringify(lista));
+                alert('Las fotos no cabían en la memoria del teléfono; el checklist se guardó sin fotos.');
             }
+            actualizarAvisoPendientes();
+        }
+        function actualizarAvisoPendientes() {
+            const n = getPendientes().length;
+            if (n) showMsg('pendingMessage', `⏳ ${n} checklist(s) pendiente(s) de envío. Se enviarán cuando haya conexión.`);
+            else hideMsg('pendingMessage');
+        }
+        async function enviarPendientes() {
+            if (!sesion || !navigator.onLine) { actualizarAvisoPendientes(); return; }
+            let lista = getPendientes();
+            actualizarAvisoPendientes();
+            while (lista.length) {
+                try {
+                    await api('guardar', { datos: lista[0] });
+                    lista.shift();
+                    localStorage.setItem(PENDING_KEY, JSON.stringify(lista));
+                    actualizarAvisoPendientes();
+                    showMsg('successMessage', '✓ Checklist pendiente enviado correctamente', 4000);
+                } catch (err) { break; }
+            }
+        }
 
-            historyList.innerHTML = registros.reverse().map(reg => `
+        // ============ HISTORIAL (ADMIN) ============
+        async function loadHistory() {
+            const box = document.getElementById('historyList');
+            box.innerHTML = '<div class="empty-state">Cargando...</div>';
+            try {
+                const r = await api('historial');
+                historialCache = r.registros;
+                renderHistory();
+            } catch (err) {
+                box.innerHTML = `<div class="empty-state">❌ ${err.message}</div>`;
+            }
+        }
+
+        function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+        function renderHistory() {
+            const box = document.getElementById('historyList');
+            if (!historialCache.length) { box.innerHTML = '<div class="empty-state">📭 No hay checklists registrados aún</div>'; return; }
+            box.innerHTML = historialCache.map(r => `
                 <div class="record-item">
                     <div class="record-header">
                         <div>
-                            <div class="record-vehicle">🚗 ${reg.placa} - ${reg.conductor}</div>
-                            <div class="record-date">${reg.fecha} · ${reg.timestamp}</div>
+                            <div class="record-vehicle">🚗 ${esc(r.placa)} · ${esc(r.conductor)}</div>
+                            <div class="record-date">${esc(r.fecha)} · enviado ${esc(r.registrado)} por ${esc(r.usuario)}</div>
                         </div>
-                        ${currentRole === 'admin' ? `<button class="btn-danger btn-small" onclick="deleteRecord(${reg.id})">🗑️ Eliminar</button>` : ''}
+                        <button class="btn-danger btn-small" onclick="deleteRecord('${esc(r.id)}')">🗑️</button>
                     </div>
                     <div class="record-details">
-                        <p><strong>Km Iniciales:</strong> ${reg.kmInicial || 'N/A'}</p>
-                        <p><strong>SOAT:</strong> ${reg.soat || 'N/A'} ${reg.fechaVencSoat ? `(Vence: ${reg.fechaVencSoat})` : ''}</p>
-                        <p><strong>Componentes Revisados:</strong> ${reg.condiciones.length} ✓</p>
-                        <p><strong>Equipos Disponibles:</strong> ${reg.herramientas.length} ✓</p>
-                        <p><strong>Calificación:</strong> ${reg.calificacion || 'N/A'}</p>
-                        ${reg.observaciones ? `<p><strong>Observaciones:</strong> ${reg.observaciones}</p>` : ''}
-                        ${reg.fotos && reg.fotos.length > 0 ? `
-                            <div class="record-photos">
-                                <h4>📸 Fotos Adjuntas (${reg.fotos.length})</h4>
-                                ${reg.fotos.map((foto, idx) => `
-                                    <img src="${foto.data}" onclick="viewPhoto('${foto.data}')" title="${foto.timestamp}">
-                                `).join('')}
+                        <div><strong>Km:</strong> ${esc(r.kmInicial) || 'N/A'} &nbsp;·&nbsp; <strong>SOAT:</strong> ${esc(r.soat) || 'N/A'} ${r.fechaVencSoat ? '(vence ' + esc(r.fechaVencSoat) + ')' : ''} &nbsp;·&nbsp; <strong>Calificación:</strong> ${esc(r.calificacion) || 'N/A'}</div>
+                        <div><strong>Componentes OK:</strong> ${esc(r.condiciones) || 'Ninguno'}</div>
+                        <div><strong>Equipos OK:</strong> ${esc(r.herramientas) || 'Ninguno'}</div>
+                        ${r.observaciones ? `<div><strong>Observaciones:</strong> ${esc(r.observaciones)}</div>` : ''}
+                        ${r.fotos.length ? `<div class="record-photos">📸 ${r.fotos.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Foto ${i + 1}</a>`).join('')}</div>` : ''}
+                    </div>
+                </div>`).join('');
+        }
+
+        async function deleteRecord(id) {
+            if (!confirm('¿Eliminar este checklist? Esta acción no se puede deshacer.')) return;
+            try { await api('eliminar', { id }); loadHistory(); }
+            catch (err) { alert('No se pudo eliminar: ' + err.message); }
+        }
+
+        // ============ ADMIN ============
+        async function loadAdminPanel() {
+            loadUsers();
+            try {
+                if (!historialCache.length) { const r = await api('historial'); historialCache = r.registros; }
+                renderStats();
+            } catch (err) { document.getElementById('statsSection').innerHTML = `<div class="empty-state">${esc(err.message)}</div>`; }
+        }
+
+        function renderStats() {
+            const regs = historialCache;
+            const hoy = new Date().toISOString().slice(0, 10);
+            const stat = (t, v) => `<div class="record-item"><strong>${t}</strong><h3>${v}</h3></div>`;
+            document.getElementById('statsSection').innerHTML =
+                stat('📋 Total checklists', regs.length) +
+                stat('📅 Hoy', regs.filter(r => r.fecha === hoy).length) +
+                stat('⚠️ Regular / Malo', regs.filter(r => /Regular|Malo/.test(r.calificacion)).length) +
+                stat('🛡️ SOAT vencido', regs.filter(r => /Vencido/.test(r.soat)).length);
+        }
+
+        async function loadUsers() {
+            const box = document.getElementById('usersList');
+            box.innerHTML = '<div class="empty-state">Cargando...</div>';
+            try {
+                const r = await api('usuarios');
+                box.innerHTML = r.usuarios.map(u => `
+                    <div class="record-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                            <div>
+                                <strong>${esc(u.nombre)}</strong> (${esc(u.usuario)})<br>
+                                <span style="color:#999; font-size:12px;">${u.rol === 'admin' ? '🔐 Administrador' : '🚗 Conductor'}${u.email ? ' · 📧 ' + esc(u.email) + ' (2 pasos)' : ''}</span>
                             </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function deleteRecord(id) {
-            if (currentRole !== 'admin') {
-                alert('Solo administradores pueden eliminar registros');
-                return;
-            }
-
-            if (confirm('¿Estás seguro de que deseas eliminar este registro?')) {
-                let registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
-                registros = registros.filter(reg => reg.id !== id);
-                localStorage.setItem('checklistRegistros', JSON.stringify(registros));
-                loadHistory();
-            }
-        }
-
-        function loadAdminPanel() {
-            loadUsersList();
-            loadStats();
-        }
-
-        function loadUsersList() {
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-            const usersList = document.getElementById('usersList');
-
-            usersList.innerHTML = Object.entries(users).map(([id, data]) => `
-                <div class="record-item">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <strong>${data.name || 'Sin nombre'}</strong> (${id})<br>
-                            <span style="color: #999; font-size: 12px;">
-                                Rol: <strong>${data.role === 'admin' ? '🔐 ADMINISTRADOR' : '👤 Usuario'}</strong>
-                            </span>
+                            ${u.usuario !== sesion.usuario ? `<button class="btn-danger btn-small" onclick="deleteUser('${esc(u.usuario)}')">Eliminar</button>` : '<span style="color:#999;font-size:12px;">(tú)</span>'}
                         </div>
-                        ${data.role !== 'admin' || id !== currentUser ? `
-                            <button class="btn-danger btn-small" onclick="deleteUser('${id}')">Eliminar</button>
-                        ` : ''}
-                    </div>
-                </div>
-            `).join('');
+                    </div>`).join('');
+            } catch (err) { box.innerHTML = `<div class="empty-state">❌ ${esc(err.message)}</div>`; }
         }
 
-        function addNewUser() {
-            if (currentRole !== 'admin') {
-                alert('Solo administradores pueden agregar usuarios');
-                return;
-            }
-
-            const id = document.getElementById('newUserID').value.trim();
-            const pass = document.getElementById('newUserPass').value.trim();
-            const role = document.getElementById('newUserRole').value;
-
-            if (!id || !pass) {
-                alert('Por favor completa todos los campos');
-                return;
-            }
-
-            let users = JSON.parse(localStorage.getItem('users') || '{}');
-
-            if (users[id]) {
-                alert('El usuario ya existe');
-                return;
-            }
-
-            users[id] = { password: pass, role: role, name: `Usuario ${id}` };
-            localStorage.setItem('users', JSON.stringify(users));
-
-            document.getElementById('newUserID').value = '';
-            document.getElementById('newUserPass').value = '';
-
-            loadUsersList();
-            alert('✓ Usuario agregado correctamente');
+        async function addNewUser() {
+            hideMsg('userError');
+            const btn = document.getElementById('addUserBtn');
+            btn.disabled = true;
+            try {
+                await api('agregarUsuario', {
+                    usuario: document.getElementById('newUserID').value.trim(),
+                    nombre: document.getElementById('newUserName').value.trim(),
+                    email: document.getElementById('newUserEmail').value.trim(),
+                    clave: document.getElementById('newUserPass').value.trim(),
+                    rol: document.getElementById('newUserRole').value
+                });
+                ['newUserID', 'newUserName', 'newUserEmail', 'newUserPass'].forEach(id => document.getElementById(id).value = '');
+                loadUsers();
+            } catch (err) { showMsg('userError', err.message); }
+            finally { btn.disabled = false; }
         }
 
-        function deleteUser(id) {
-            if (currentRole !== 'admin') {
-                alert('Solo administradores pueden eliminar usuarios');
-                return;
-            }
-
-            if (id === currentUser) {
-                alert('No puedes eliminar tu propia cuenta');
-                return;
-            }
-
-            if (confirm('¿Estás seguro?')) {
-                let users = JSON.parse(localStorage.getItem('users') || '{}');
-                delete users[id];
-                localStorage.setItem('users', JSON.stringify(users));
-                loadUsersList();
-            }
+        async function deleteUser(usuario) {
+            if (!confirm(`¿Eliminar el usuario ${usuario}?`)) return;
+            try { await api('eliminarUsuario', { usuario }); loadUsers(); }
+            catch (err) { alert(err.message); }
         }
 
-        function loadStats() {
-            const registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-
-            const stats = {
-                totalChecklists: registros.length,
-                totalUsers: Object.keys(users).length,
-                totalFotos: registros.reduce((sum, r) => sum + (r.fotos?.length || 0), 0),
-                vehiculos: [...new Set(registros.map(r => r.placa))]
-            };
-
-            document.getElementById('statsSection').innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                    <div class="record-item">
-                        <strong>📋 Total de Checklists</strong><br>
-                        <h3 style="color: #667eea; margin-top: 10px;">${stats.totalChecklists}</h3>
-                    </div>
-                    <div class="record-item">
-                        <strong>👥 Total de Usuarios</strong><br>
-                        <h3 style="color: #667eea; margin-top: 10px;">${stats.totalUsers}</h3>
-                    </div>
-                    <div class="record-item">
-                        <strong>📸 Total de Fotos</strong><br>
-                        <h3 style="color: #667eea; margin-top: 10px;">${stats.totalFotos}</h3>
-                    </div>
-                    <div class="record-item">
-                        <strong>🚗 Vehículos Diferentes</strong><br>
-                        <h3 style="color: #667eea; margin-top: 10px;">${stats.vehiculos.length}</h3>
-                    </div>
-                </div>
-            `;
-        }
-
-        function exportAllData() {
-            const data = {
-                checklists: JSON.parse(localStorage.getItem('checklistRegistros') || '[]'),
-                exportDate: new Date().toLocaleString('es-CO'),
-                exportedBy: currentUser
-            };
-
-            const json = JSON.stringify(data, null, 2);
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(json));
-            element.setAttribute('download', `checklist-backup-${Date.now()}.json`);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
+        function openSheet() {
+            if (sesion.sheetUrl) window.open(sesion.sheetUrl, '_blank');
+            else alert('Vuelve a iniciar sesión para obtener el enlace de la hoja.');
         }
 
         function exportCSV() {
-            const registros = JSON.parse(localStorage.getItem('checklistRegistros') || '[]');
-            const headers = ['Fecha', 'Placa', 'Conductor', 'Km', 'SOAT', 'Calificación', 'Fotos', 'Usuario', 'Timestamp'];
-
-            let csv = headers.join(',') + '\n';
-
-            registros.forEach(reg => {
-                csv += [
-                    reg.fecha,
-                    reg.placa,
-                    reg.conductor,
-                    reg.kmInicial || '',
-                    reg.soat || '',
-                    reg.calificacion || '',
-                    reg.fotos?.length || 0,
-                    reg.usuario,
-                    reg.timestamp
-                ].join(',') + '\n';
-            });
-
-            const element = document.createElement('a');
-            element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
-            element.setAttribute('download', `checklist-reporte-${Date.now()}.csv`);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-        }
-
-        function clearAllDataAdmin() {
-            if (currentRole !== 'admin') {
-                alert('Solo administradores pueden hacer esto');
-                return;
-            }
-
-            if (confirm('⚠️ ¿Estás seguro? Esto eliminará TODOS los registros.')) {
-                if (confirm('Esta acción NO se puede deshacer. ¿Continuar?')) {
-                    localStorage.removeItem('checklistRegistros');
-                    alert('✓ Todos los datos han sido eliminados');
-                    loadAdminPanel();
-                }
-            }
+            if (!historialCache.length) { alert('Primero abre el Historial para cargar los datos.'); return; }
+            const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+            const head = ['Fecha', 'Placa', 'Conductor', 'Km', 'SOAT', 'Vence SOAT', 'Componentes OK', 'Equipos OK', 'Calificación', 'Observaciones', 'Fotos', 'Usuario', 'Registrado'];
+            const rows = historialCache.map(r => [r.fecha, r.placa, r.conductor, r.kmInicial, r.soat, r.fechaVencSoat, r.condiciones, r.herramientas, r.calificacion, r.observaciones, r.fotos.join(' '), r.usuario, r.registrado].map(q).join(','));
+            const csv = '﻿' + head.map(q).join(',') + '\n' + rows.join('\n');
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+            a.download = `checklist-kernel-${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
         }
     </script>
 </body>
