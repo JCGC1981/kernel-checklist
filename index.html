@@ -333,7 +333,7 @@
 
                     <div class="button-group">
                         <button type="submit" class="btn-primary" id="saveBtn">📤 Enviar Checklist</button>
-                        <button type="reset" class="btn-secondary" onclick="currentPhotos=[];updatePhotoGallery()">🔄 Limpiar Formulario</button>
+                        <button type="button" class="btn-secondary" onclick="limpiarFormulario()">🔄 Limpiar Formulario</button>
                     </div>
                 </form>
             </div>
@@ -419,13 +419,23 @@
         let historialCache = [];
         let cameraStream = null;
 
+        // Fecha de HOY según la hora local del teléfono (no UTC), para Colombia
+        function hoyLocal() {
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+        }
+
         // ============ API ============
         async function api(action, data) {
             const res = await fetch(API_URL, {
                 method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(Object.assign({ action, token: sesion && sesion.token }, data || {}))
             });
-            const json = await res.json();
+            let json;
+            try { json = await res.json(); }
+            catch (e) { throw new Error('El servidor de Kernel Energy no respondió correctamente. Intenta de nuevo en unos minutos o avisa al administrador.'); }
             if (!json.ok) {
                 if (/Sesión expirada/i.test(json.error || '')) { forceLogout(); }
                 throw new Error(json.error || 'Error desconocido');
@@ -433,18 +443,30 @@
             return json;
         }
 
-        function isOffline(err) {
+        // Error al comunicarse con el servidor (puede ser falta de internet O una falla del servidor)
+        function esErrorDeRed(err) {
             return err instanceof TypeError || /Failed to fetch|NetworkError|Load failed/i.test(err.message || '');
+        }
+        // Solo es "sin internet" si el teléfono realmente no tiene conexión
+        function isOffline(err) {
+            return esErrorDeRed(err) && !navigator.onLine;
+        }
+        function textoErrorRed() {
+            return navigator.onLine
+                ? 'No se pudo conectar con el servidor de Kernel Energy (tu teléfono sí tiene internet). Revisa tu señal e intenta de nuevo en un minuto; si sigue igual, avisa al administrador.'
+                : 'Sin conexión a internet. Intenta de nuevo.';
         }
 
         // ============ INICIO ============
         window.addEventListener('load', () => {
-            document.getElementById('fecha').valueAsDate = new Date();
+            document.getElementById('fecha').value = hoyLocal();
             document.getElementById('loginForm').addEventListener('submit', handleLogin);
             document.getElementById('codeForm').addEventListener('submit', handleCode);
             document.getElementById('checklistForm').addEventListener('submit', handleSaveChecklist);
             document.getElementById('photoUpload').addEventListener('change', handlePhotoUpload);
             window.addEventListener('online', enviarPendientes);
+            setInterval(enviarPendientes, 60000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) enviarPendientes(); });
 
             if (API_URL.startsWith('PEGAR_AQUI')) {
                 showMsg('loginError', 'La aplicación aún no está conectada a Google Sheets. Contacta al administrador.');
@@ -488,7 +510,7 @@
                     iniciarSesion(r, usuario);
                 }
             } catch (err) {
-                showMsg('loginError', isOffline(err) ? 'Sin conexión a internet. Intenta de nuevo.' : err.message);
+                showMsg('loginError', esErrorDeRed(err) ? textoErrorRed() : err.message);
             } finally {
                 btn.disabled = false; btn.textContent = 'Ingresar';
             }
@@ -503,7 +525,7 @@
                 const r = await api('verificarCodigo', { pre: preAuth.pre, codigo: document.getElementById('loginCode').value.trim() });
                 iniciarSesion(r, preAuth.usuario);
             } catch (err) {
-                showMsg('loginError', isOffline(err) ? 'Sin conexión a internet.' : err.message);
+                showMsg('loginError', esErrorDeRed(err) ? textoErrorRed() : err.message);
                 if (/Vuelve a iniciar sesión/i.test(err.message)) cancelarCodigo(true);
             } finally {
                 btn.disabled = false; btn.textContent = 'Verificar';
@@ -676,8 +698,8 @@
             const form = document.getElementById('checklistForm');
             const conductor = document.getElementById('conductor').value;
             form.reset();
-            document.getElementById('fecha').valueAsDate = new Date();
-            if (sesion.rol !== 'admin') document.getElementById('conductor').value = conductor;
+            document.getElementById('fecha').value = hoyLocal();
+            if (sesion && sesion.rol !== 'admin') document.getElementById('conductor').value = conductor;
             currentPhotos = []; updatePhotoGallery();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -693,10 +715,13 @@
                 limpiarFormulario();
                 showMsg('successMessage', '✓ Checklist enviado correctamente a Kernel Energy', 5000);
             } catch (err) {
-                if (isOffline(err)) {
+                if (esErrorDeRed(err)) {
+                    // Se guarda en el teléfono para no perder el checklist y se reintenta solo
                     guardarPendiente(datos);
                     limpiarFormulario();
-                    showMsg('warningMessage', '📶 Sin conexión. El checklist quedó guardado en este teléfono y se enviará automáticamente cuando haya internet.');
+                    showMsg('warningMessage', navigator.onLine
+                        ? '⚠️ No se pudo contactar el servidor de Kernel Energy, aunque tu teléfono tiene internet. El checklist NO se perdió: quedó guardado en este teléfono y se reintentará solo cada minuto. Si sigue pendiente, avisa al administrador.'
+                        : '📶 Sin conexión. El checklist quedó guardado en este teléfono y se enviará automáticamente cuando haya internet.');
                 } else {
                     showMsg('warningMessage', '❌ No se pudo enviar: ' + err.message);
                 }
@@ -723,19 +748,24 @@
             if (n) showMsg('pendingMessage', `⏳ ${n} checklist(s) pendiente(s) de envío. Se enviarán cuando haya conexión.`);
             else hideMsg('pendingMessage');
         }
+        let enviandoPendientes = false;
         async function enviarPendientes() {
             if (!sesion || !navigator.onLine) { actualizarAvisoPendientes(); return; }
-            let lista = getPendientes();
-            actualizarAvisoPendientes();
-            while (lista.length) {
-                try {
-                    await api('guardar', { datos: lista[0] });
-                    lista.shift();
-                    localStorage.setItem(PENDING_KEY, JSON.stringify(lista));
-                    actualizarAvisoPendientes();
-                    showMsg('successMessage', '✓ Checklist pendiente enviado correctamente', 4000);
-                } catch (err) { break; }
-            }
+            if (enviandoPendientes) return;
+            enviandoPendientes = true;
+            try {
+                let lista = getPendientes();
+                actualizarAvisoPendientes();
+                while (lista.length) {
+                    try {
+                        await api('guardar', { datos: lista[0] });
+                        lista.shift();
+                        localStorage.setItem(PENDING_KEY, JSON.stringify(lista));
+                        actualizarAvisoPendientes();
+                        showMsg('successMessage', '✓ Checklist pendiente enviado correctamente', 4000);
+                    } catch (err) { break; }
+                }
+            } finally { enviandoPendientes = false; }
         }
 
         // ============ HISTORIAL (ADMIN) ============
@@ -770,7 +800,7 @@
                         <div><strong>Componentes OK:</strong> ${esc(r.condiciones) || 'Ninguno'}</div>
                         <div><strong>Equipos OK:</strong> ${esc(r.herramientas) || 'Ninguno'}</div>
                         ${r.observaciones ? `<div><strong>Observaciones:</strong> ${esc(r.observaciones)}</div>` : ''}
-                        ${r.fotos.length ? `<div class="record-photos">📸 ${r.fotos.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Foto ${i + 1}</a>`).join('')}</div>` : ''}
+                        ${(r.fotos || []).length ? `<div class="record-photos">📸 ${r.fotos.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">Foto ${i + 1}</a>`).join('')}</div>` : ''}
                     </div>
                 </div>`).join('');
         }
@@ -792,7 +822,7 @@
 
         function renderStats() {
             const regs = historialCache;
-            const hoy = new Date().toISOString().slice(0, 10);
+            const hoy = hoyLocal();
             const stat = (t, v) => `<div class="record-item"><strong>${t}</strong><h3>${v}</h3></div>`;
             document.getElementById('statsSection').innerHTML =
                 stat('📋 Total checklists', regs.length) +
@@ -852,11 +882,11 @@
             if (!historialCache.length) { alert('Primero abre el Historial para cargar los datos.'); return; }
             const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
             const head = ['Fecha', 'Placa', 'Conductor', 'Km', 'SOAT', 'Vence SOAT', 'Componentes OK', 'Equipos OK', 'Calificación', 'Observaciones', 'Fotos', 'Usuario', 'Registrado'];
-            const rows = historialCache.map(r => [r.fecha, r.placa, r.conductor, r.kmInicial, r.soat, r.fechaVencSoat, r.condiciones, r.herramientas, r.calificacion, r.observaciones, r.fotos.join(' '), r.usuario, r.registrado].map(q).join(','));
+            const rows = historialCache.map(r => [r.fecha, r.placa, r.conductor, r.kmInicial, r.soat, r.fechaVencSoat, r.condiciones, r.herramientas, r.calificacion, r.observaciones, (r.fotos || []).join(' '), r.usuario, r.registrado].map(q).join(','));
             const csv = '﻿' + head.map(q).join(',') + '\n' + rows.join('\n');
             const a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-            a.download = `checklist-kernel-${new Date().toISOString().slice(0, 10)}.csv`;
+            a.download = `checklist-kernel-${hoyLocal()}.csv`;
             a.click();
             URL.revokeObjectURL(a.href);
         }

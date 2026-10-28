@@ -1,4 +1,4 @@
-const CACHE = 'kernel-checklist-v3';
+const CACHE = 'kernel-checklist-v5';
 const FILES = ['./', './index.html', './logo.jpg', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -14,9 +14,14 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  const req = e.request;
+  // Solo se manejan los archivos propios de la app (GET). Los envíos al servidor
+  // de Google (POST, otro dominio) pasan directo, sin que el service worker intervenga.
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+
   e.respondWith(
-    fetch(e.request)
-      .then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; })
-      .catch(() => caches.match(e.request))
+    fetch(req)
+      .then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return r; })
+      .catch(() => caches.match(req).then(hit => hit || Response.error()))
   );
 });
